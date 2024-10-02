@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-card max-width="80%">
-            <v-card-text>
+            <v-card-text class="pa-6">
                 <v-form>
                     <v-text-field
                         label="Username"
@@ -12,10 +12,8 @@
                         outlined
                     ></v-text-field>
                 </v-form>
+                <v-btn color="primary" width="100%" size="large" variant="flat" @click="login">Login</v-btn>
             </v-card-text>
-            <v-card-actions>
-                <v-btn color="primary" @click="login">Login</v-btn>
-            </v-card-actions>
         </v-card>
     </v-container>
 </template>
