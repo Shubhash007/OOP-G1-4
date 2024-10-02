@@ -18,7 +18,7 @@ const timperioTheme = {
     background: '#FFFFFF',
     surface: '#FFFFFF',
     primary: '#556b2f',
-    secondary: '#D4AF37',
+    secondary: '#ab9761',
     error: '#B00020',
     info: '#2196F3',
     success: '#4CAF50',
