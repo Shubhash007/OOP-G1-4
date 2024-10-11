@@ -6,6 +6,7 @@ import Landing from '../pages/Landing.vue';
 import PurchaseHistory from '@/pages/PurchaseHistory.vue';
 import Admin from '@/pages/Admin.vue';
 import Analytics from '@/pages/Analytics.vue';
+import Marketing from '@/pages/Marketing.vue';
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
         path: 'analytics',
         name: 'Analytics',
         component: Analytics,
+      },
+      {
+        path: 'marketing',
+        name: 'Marketing',
+        component: Marketing,
       },
     ],
   },

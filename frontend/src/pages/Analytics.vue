@@ -9,11 +9,13 @@
 </template>
 
 <script>
+import AnalyticsBar from '@/components/AnalyticsBar.vue';
 import AnalyticsCharts from '@/components/AnalyticsCharts.vue';
 
 export default {
-    methods: {
-
-    },
+  components: {
+    AnalyticsBar,
+    AnalyticsCharts,
+  },
 };
 </script>
