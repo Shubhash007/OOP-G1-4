@@ -20,10 +20,6 @@
           <v-list-item-title>Home</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/about" prepend-icon="mdi-account-outline" link class="p-6">
-          <v-list-item-title>About</v-list-item-title>
-        </v-list-item>
-
         <v-list-item to="/purchaseHistory" prepend-icon="mdi-history" link class="p-6">
           <v-list-item-title>Purchase History</v-list-item-title>
         </v-list-item>
