@@ -8,7 +8,6 @@ import com.example.timperio.crm.timperio_g1_4.entity.Sale;
 import com.example.timperio.crm.timperio_g1_4.mapper.SaleMapper;
 import com.example.timperio.crm.timperio_g1_4.repository.SaleRepository;
 import com.example.timperio.crm.timperio_g1_4.service.SaleService;
-import java.util.*;
 
 @Service
 public class SaleServiceImpl implements SaleService {

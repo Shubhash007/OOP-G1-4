@@ -2,6 +2,8 @@ package com.example.timperio.crm.timperio_g1_4.dto;
 
 import java.util.Date;
 
+import com.example.timperio.crm.timperio_g1_4.entity.Customer;
+import com.example.timperio.crm.timperio_g1_4.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,16 +15,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SaleDto{
 
-    private Long rowNo;
+    private Long saleId;
     private Date saleDate;
     private String saleType;
-    private String digital;
-    private Long customerId;
-    private Long zipCode;
+    private String digitalChannel;
     private String shippingMethod;
-    private String product;
-    private String variant;
     private Long quantity;
-    private double price;
     private double productPrice;
+    private Customer customer;
+    private Product product;
 }

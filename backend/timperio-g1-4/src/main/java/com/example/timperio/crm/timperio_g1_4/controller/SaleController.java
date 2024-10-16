@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-//@RequestMapping("/sale")
+@RequestMapping("/sale")
 public class SaleController {
 
     @Autowired
     private SaleService saleService;
 
-    @RequestMapping("/sale")
+    @RequestMapping("/create")
     public ResponseEntity<SaleDto> createProduct(@RequestBody SaleDto saleDto){
         SaleDto savedProduct = saleService.createProduct(saleDto);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);

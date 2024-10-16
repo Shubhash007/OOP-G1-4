@@ -7,35 +7,29 @@ public class SaleMapper {
 
     public static SaleDto mapToSaleDto(Sale sale){
         return new SaleDto(
-            sale.getRowNo(),
+            sale.getSaleId(),
             sale.getSaleDate(),
             sale.getSaleType(),
-            sale.getDigital(),
-            sale.getCustomerId(),
-            sale.getZipCode(),
+            sale.getDigitalChannel(),
             sale.getShippingMethod(),
-            sale.getProduct(),
-            sale.getVariant(),
             sale.getQuantity(),
-            sale.getPrice(),
-            sale.getProductPrice()
+            sale.getProductPrice(),
+            sale.getCustomer(),
+            sale.getProduct()
         );        
     }
 
     public static Sale mapToSale(SaleDto saleDto){
         return new Sale(
-            saleDto.getRowNo(),
+            saleDto.getSaleId(),
             saleDto.getSaleDate(),
             saleDto.getSaleType(),
-            saleDto.getDigital(),
-            saleDto.getCustomerId(),
-            saleDto.getZipCode(),
+            saleDto.getDigitalChannel(),
             saleDto.getShippingMethod(),
-            saleDto.getProduct(),
-            saleDto.getVariant(),
             saleDto.getQuantity(),
-            saleDto.getPrice(),
-            saleDto.getProductPrice()
+            saleDto.getProductPrice(),
+            saleDto.getCustomer(),
+            saleDto.getProduct()
         );        
     }
 
