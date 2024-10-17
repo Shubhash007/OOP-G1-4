@@ -12,7 +12,7 @@ public class CustomerMapper {
         );
     }
 
-
+    
     public static Customer mapToCustomer(CustomerDto customerDto){
         return new Customer(
             customerDto.getCustomerId(),

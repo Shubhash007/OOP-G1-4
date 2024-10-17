@@ -15,5 +15,5 @@ public interface UserService {
 
     UserDto login(String username, String password);
 
-    boolean updateOwnPassword(String username, String oldPassword, String newPassword);
+    //boolean updateOwnPassword(String username, String oldPassword, String newPassword);
 }
