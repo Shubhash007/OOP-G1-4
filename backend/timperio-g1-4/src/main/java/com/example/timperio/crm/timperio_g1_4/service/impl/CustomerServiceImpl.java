@@ -11,21 +11,21 @@ import com.example.timperio.crm.timperio_g1_4.repository.CustomerRepository;
 import com.example.timperio.crm.timperio_g1_4.service.CustomerService;
 
 
-@Service
-public class CustomerServiceImpl implements CustomerService {
+// @Service
+// public class CustomerServiceImpl implements CustomerService {
 
-    @Autowired
-    private CustomerRepository customerRepository;
+//     @Autowired
+//     private CustomerRepository customerRepository;
     
-    @Override
-    @Transactional
-    public CustomerDto createCustomer(CustomerDto customerDto) {
-        Customer customer = CustomerMapper.mapToCustomer(customerDto);
-        // if (customerRepository.existsById(customer.getCustomerId())){
-        //     return null;
-        // }
-        Customer savedCustomer = customerRepository.save(customer);
-        return CustomerMapper.maptoCustomerDto(savedCustomer);
-    }
+//     @Override
+//     @Transactional
+//     public CustomerDto createCustomer(CustomerDto customerDto) {
+//         Customer customer = CustomerMapper.mapToCustomer(customerDto);
+//         // if (customerRepository.existsById(customer.getCustomerId())){
+//         //     return null;
+//         // }
+//         Customer savedCustomer = customerRepository.save(customer);
+//         return CustomerMapper.maptoCustomerDto(savedCustomer);
+//     }
 
-}
+// }

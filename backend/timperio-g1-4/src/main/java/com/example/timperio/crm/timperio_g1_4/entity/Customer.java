@@ -1,4 +1,5 @@
 package com.example.timperio.crm.timperio_g1_4.entity;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +32,22 @@ public class Customer {
 
     @Id
     @Column(name = "customer_id")
-    //#@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
 
     @ElementCollection
     @CollectionTable(name = "customer_zip_codes", joinColumns = @JoinColumn(name = "customer_id"))
     @Column(name = "zip_code")
-    private List<Long> zipCode; // multiple addresses Integer array
+    private List<Long> zipCode = new ArrayList<>(); // multiple addresses Integer array
+
+    @Column(name = "last_purchase_date")
+    private LocalDate lastPurchaseDate;
+
+    @Column(name = "accept_newsletter", nullable = false)
+    private Boolean acceptNewsletter = false;
+
+    @Column(name = "email", length = 100)
+    private String email;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @Column(nullable = true)

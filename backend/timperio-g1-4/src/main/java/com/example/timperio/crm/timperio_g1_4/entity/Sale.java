@@ -2,6 +2,8 @@ package com.example.timperio.crm.timperio_g1_4.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -32,20 +34,25 @@ public class Sale {
     @Column(name = "sale_date")
     private Date saleDate;
 
-    @Column(name = "sale_type")
-    private String saleType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sale_type", nullable = false)
+    private SaleType saleType;
 
-    @Column(name = "digital_channel")
-    private String digitalChannel;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "shipping_method", nullable = false)
+    private ShippingMethod shippingMethod;
 
-    @Column(name = "shipping_method")
-    private String shippingMethod;
-
-    // @Column(name = "variant")
-    // private String variant;
+    @Column(name = "digital")
+    private String digital;
 
     @Column(name = "quantity")
     private Long quantity;
+
+    @Column(name = "original_price", nullable = false, precision = 8, scale = 2)
+    private BigDecimal originalPrice;
+
+    @Column(name = "discounted_price", precision = 8, scale = 2)
+    private BigDecimal discountedPrice;
 
     @Column(name = "product_price")
     private double productPrice;
@@ -57,44 +64,22 @@ public class Sale {
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "promotion_id")
+    private Promotion promotion;
 }
 
-/*
- *  @Id
-    @Column(name = "row_no")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long rowNo;
+enum ShippingMethod {
+    STANDARD_DELIVERY,
+    SELF_COLLECT,
+    SAME_DAY_DELIVERY
+}
 
-    @Column(name = "sale_date")
-    private Date saleDate;
-
-    @Column(name = "sale_type")
-    private String saleType;
-
-    @Column(name = "digital")
-    private String digital;
-
-    @Column(name = "customer_id")
-    private Long customerId;
-
-    @Column(name = "zip_code")
-    private Long zipCode;
-
-    @Column(name = "shipping_method")
-    private String shippingMethod;
-
-    @Column(name = "product")
-    private String product;
-
-    @Column(name = "variant")
-    private String variant;
-
-    @Column(name = "quantity")
-    private Long quantity;
-
-    @Column(name = "price")
-    private double price;
-
-    @Column(name = "product_price")
-    private double productPrice;
- */
+enum SaleType {
+    DIRECT_B2B,
+    CONSIGNMENT,
+    MARKETING,
+    DIRECT_B2C,
+    WHOLESALER
+}
