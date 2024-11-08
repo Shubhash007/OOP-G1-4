@@ -10,9 +10,9 @@ import com.example.timperio.crm.repository.UserRepository;
 import com.example.timperio.crm.service.UserService;
 import java.util.*;
 
-public interface UserService {
-    UserDto createUser(UserDto userDto);
+import com.example.timperio.crm.reusables.exceptions.*;
 
+public interface UserService {
     UserDto login(String username, String password);
 
     // boolean updateOwnPassword(String username, String oldPassword, String

@@ -16,9 +16,24 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/user")
+    // Endpoint to create a new (non-admin) user
+    @RequestMapping("/user/create")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
         UserDto savedUser = userService.createUser(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+
+    // Endpoint to update an existing (non-admin) user
+    @RequestMapping("/user/update")
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+        UserDto updatedUser = userService.updateUser(userDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    // Endpoint to delete an existing (non-admin) user
+    @RequestMapping("/user/delete")
+    public ResponseEntity<UserDto> deleteUser(@RequestBody String userId) {
+        UserDto deletedUser = userService.deleteUser(userId);
+        return new ResponseEntity<>(deletedUser, HttpStatus.OK);
     }
 }

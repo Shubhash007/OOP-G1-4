@@ -15,8 +15,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
-    public User() {
+public class AdminUser extends User {
+    public AdminUser() {
 
     }
 
@@ -32,5 +32,5 @@ public class User {
     private String password;
 
     @Column(name = "role")
-    private String role;
+    private String role = "sysadmin";
 }

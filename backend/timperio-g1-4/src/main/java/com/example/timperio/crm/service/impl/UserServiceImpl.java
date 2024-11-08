@@ -10,17 +10,12 @@ import com.example.timperio.crm.repository.UserRepository;
 import com.example.timperio.crm.service.UserService;
 import java.util.*;
 
+import com.example.timperio.crm.reusables.exceptions.*;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
-
-    @Override
-    public UserDto createUser(UserDto userDto) {
-        User user = UserMapper.mapToUser(userDto);
-        User savedUser = userRepository.save(user);
-        return UserMapper.mapToUserDto(savedUser);
-    }
 
     @Override
     public UserDto login(String username, String password) {
