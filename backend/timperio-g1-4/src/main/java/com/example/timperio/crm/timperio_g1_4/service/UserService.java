@@ -11,9 +11,10 @@ import com.example.timperio.crm.timperio_g1_4.service.UserService;
 import java.util.*;
 
 public interface UserService {
-    UserDto createUser(UserDto userDto);
+    // UserDto createUser(UserDto userDto);
 
-    UserDto login(String username, String password);
+    // UserDto login(String username, String password);
 
-    //boolean updateOwnPassword(String username, String oldPassword, String newPassword);
+    // boolean updateOwnPassword(String username, String oldPassword, String
+    // newPassword);
 }
