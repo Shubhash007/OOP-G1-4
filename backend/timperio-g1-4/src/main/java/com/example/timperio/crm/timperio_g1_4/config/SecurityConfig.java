@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/generateToken", "/auth/addNewUser").permitAll()
-                        .requestMatchers("/auth/createUser").hasAuthority("ADMIN")
+                        .requestMatchers("/auth/createUser").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()) // Protect all other endpoints
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

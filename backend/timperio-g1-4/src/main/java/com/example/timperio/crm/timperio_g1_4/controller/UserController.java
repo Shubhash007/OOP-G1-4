@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/createUser")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
         User savedUser = userService.addUser(userDto);
         return savedUser != null ? new ResponseEntity<UserDto>(HttpStatus.CREATED)
