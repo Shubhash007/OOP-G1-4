@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.timperio.crm.timperio_g1_4.dto.PasswordUpdateRequest;
 import com.example.timperio.crm.timperio_g1_4.dto.UserDto;
+import com.example.timperio.crm.timperio_g1_4.dto.UserUpdateRequest;
 import com.example.timperio.crm.timperio_g1_4.entity.AuthRequest;
 import com.example.timperio.crm.timperio_g1_4.entity.User;
 import com.example.timperio.crm.timperio_g1_4.service.JwtService;
@@ -78,11 +79,39 @@ public class UserController {
 
     }
 
-    @PostMapping("/createUser")
+    // To be modified to the conventions
+    @PostMapping("/admin/createUser")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
         User savedUser = userService.addUser(userDto);
         return savedUser != null ? new ResponseEntity<UserDto>(HttpStatus.CREATED)
                 : new ResponseEntity<UserDto>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/admin/updateUser")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> updateUser(@RequestBody UserUpdateRequest UserUpdateRequest) {
+        try {
+            Boolean updated = userService.updateUser(UserUpdateRequest);
+            return updated ? new ResponseEntity<String>("User updated successfully", HttpStatus.OK)
+                    : new ResponseEntity<String>("User update failed", HttpStatus.BAD_REQUEST);
+        } catch (UsernameNotFoundException e) {
+            return new ResponseEntity<String>("User not found", HttpStatus.BAD_REQUEST);
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<String>("Cannot update admin user", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/admin/deleteUser")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> deleteUser(@RequestParam String username) {
+        try {
+            Boolean deleted = userService.deleteUser(username);
+            return deleted ? new ResponseEntity<String>("User deleted successfully", HttpStatus.OK)
+                    : new ResponseEntity<String>("User deletion failed", HttpStatus.BAD_REQUEST);
+        } catch (UsernameNotFoundException e) {
+            return new ResponseEntity<String>("User not found", HttpStatus.BAD_REQUEST);
+        }
+
     }
 }
