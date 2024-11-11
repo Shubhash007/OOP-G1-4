@@ -1,20 +1,57 @@
 package com.example.timperio.crm.timperio_g1_4.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.timperio.crm.timperio_g1_4.dto.UserDto;
 import com.example.timperio.crm.timperio_g1_4.entity.User;
 import com.example.timperio.crm.timperio_g1_4.mapper.UserMapper;
 import com.example.timperio.crm.timperio_g1_4.repository.UserRepository;
-import com.example.timperio.crm.timperio_g1_4.service.UserService;
-import java.util.*;
 
-public interface UserService {
-    // UserDto createUser(UserDto userDto);
+@Service
+public class UserService implements UserDetailsService {
+    @Autowired
+    private UserRepository userRepository;
 
-    // UserDto login(String username, String password);
+    @Autowired
+    private PasswordEncoder encoder;
 
-    // boolean updateOwnPassword(String username, String oldPassword, String
-    // newPassword);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> userDetail = userRepository.findByUsername(username);
+        // Converting UserInfo to UserDetails
+        return userDetail.map(UserInfoDetails::new)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+    }
+
+    public User addUser(UserDto userDto) {
+        // Encode password before saving the user
+        userDto.setPassword(encoder.encode(userDto.getPassword()));
+        userRepository.save(UserMapper.mapToUser(userDto));
+        return UserMapper.mapToUser(userDto);
+    }
+
+    public boolean updateUserPassword(String username, String newPassword)
+            throws BadCredentialsException {
+        // TODO Auto-generated method stub
+        Optional<User> dbUser = userRepository.findByUsername(username);
+        if (dbUser.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        try {
+            User user = dbUser.get();
+            user.setPassword(encoder.encode(newPassword));
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

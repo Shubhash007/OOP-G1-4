@@ -17,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.example.timperio.crm.timperio_g1_4.service.UserInfoService;
+import com.example.timperio.crm.timperio_g1_4.service.UserService;
 
 import com.example.timperio.crm.timperio_g1_4.filter.JwtAuthFilter;
 
@@ -30,7 +30,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserInfoService();
+        return new UserService();
     }
 
     // NOTE: need to modify the request matchers for specific roles here
@@ -39,7 +39,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/generateToken", "/auth/addNewUser").permitAll()
+                        .requestMatchers("/auth/login", "/auth/addNewUser").permitAll()
                         .requestMatchers("/auth/createUser").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()) // Protect all other endpoints
                 .sessionManagement(sess -> sess
