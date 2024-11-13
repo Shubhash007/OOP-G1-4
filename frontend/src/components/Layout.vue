@@ -9,8 +9,6 @@
         <v-col cols="auto">
           <v-btn icon="mdi-menu" variant="text" @click.stop="drawer = !drawer"></v-btn>
         </v-col>
-        <v-img src="@/assets/logo.png" alt="Logo" max-width="80"></v-img>
-
       </v-row>
     </v-app-bar>
 
@@ -35,6 +33,12 @@
         <v-list-item to="/marketing" prepend-icon="mdi-account-multiple" link class="p-6">
           <v-list-item-title>Marketing</v-list-item-title>
         </v-list-item>
+
+        <!-- Logout Button -->
+        <v-list-item to="" link @click="logout" prepend-icon="mdi-logout" class="p-6">
+          <v-list-item-title>Logout</v-list-item-title>
+        </v-list-item>
+
       </v-list>
     </v-navigation-drawer>
 
@@ -53,8 +57,16 @@ export default {
   data() {
     return {
       drawer: true,
-      rail: true,
     };
   },
+  methods: {
+    logout() {
+      // Remove JWT token from localStorage
+      localStorage.removeItem("jwt_token");
+
+      // Redirect to login page
+      this.$router.push("/");
+    }
+  }
 };
 </script>

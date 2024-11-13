@@ -30,7 +30,7 @@ const routes = [
       },
       {
         path: 'purchaseHistory',
-        name: 'Purchase History',
+        name: 'PurchaseHistory',
         component: PurchaseHistory,
       },
       {
@@ -55,6 +55,17 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const isPublicRoute = to.name === 'Landing';
+  const jwtToken = localStorage.getItem('jwt_token');
+
+  if (!isPublicRoute && !jwtToken) {
+    next({ name: 'Landing' });
+  } else {
+    next(); 
+  }
 });
 
 export default router;
