@@ -36,6 +36,14 @@ public class UserServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
     }
 
+    // // create custom method to get user by username - the above one for jwt
+    // public User getUserByUsername(String username) throws
+    // UsernameNotFoundException {
+    // Optional<User> user = userRepository.findByUsername(username);
+    // return user.orElseThrow(() -> new UsernameNotFoundException("User Not Found
+    // with username: " + username));
+    // }
+
     public User addUser(UserDto userDto) {
         // Encode password before saving the user
         userDto.setPassword(encoder.encode(userDto.getPassword()));

@@ -8,7 +8,9 @@ import com.example.timperio.crm.timperio_g1_4.dto.UserUpdateRequest;
 import com.example.timperio.crm.timperio_g1_4.entity.User;
 
 public interface UserService {
-    UserDetails getUserByUsername(String username) throws UsernameNotFoundException;
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+
+    // User getUserByUsername(String username) throws UsernameNotFoundException;
 
     User addUser(UserDto userDto);
 

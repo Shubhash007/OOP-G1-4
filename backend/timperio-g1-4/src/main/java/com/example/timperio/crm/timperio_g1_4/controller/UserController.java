@@ -9,6 +9,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,8 +21,10 @@ import com.example.timperio.crm.timperio_g1_4.dto.UserUpdateRequest;
 import com.example.timperio.crm.timperio_g1_4.entity.AuthRequest;
 import com.example.timperio.crm.timperio_g1_4.entity.User;
 import com.example.timperio.crm.timperio_g1_4.service.JwtService;
+import com.example.timperio.crm.timperio_g1_4.service.UserInfoDetails;
 import com.example.timperio.crm.timperio_g1_4.service.impl.UserServiceImpl;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -57,6 +60,28 @@ public class UserController {
                     HttpStatus.OK);
         } else {
             throw new UsernameNotFoundException("Invalid username or password");
+        }
+    }
+
+    // this endpoint gets the info of the current logged on user
+    @GetMapping("/users/get-user")
+    @PreAuthorize("isAuthenticated()") // we check if the user is already logged in
+    public ResponseEntity<?> getCurrentUser() throws UsernameNotFoundException, Exception {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            // Ensure the authentication is not null and contains the expected principal
+            if (authentication != null && authentication.getPrincipal() instanceof UserInfoDetails) {
+                UserInfoDetails userInfoDetails = (UserInfoDetails) authentication.getPrincipal();
+                User user = userInfoDetails.getUser(); // Assuming UserInfoDetails has a getUser() method
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("User not found or unauthorized", HttpStatus.FORBIDDEN);
+            }
+        } catch (UsernameNotFoundException e) {
+            return new ResponseEntity<String>("Username not found", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("An error has occured", HttpStatus.BAD_REQUEST);
         }
     }
 
