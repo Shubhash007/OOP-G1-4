@@ -21,7 +21,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.example.timperio.crm.timperio_g1_4.filter.JwtAuthFilter;
-import com.example.timperio.crm.timperio_g1_4.service.UserService;
+import com.example.timperio.crm.timperio_g1_4.service.impl.UserServiceImpl;
+
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +33,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserService();
+        return new UserServiceImpl();
     }
 
     @Bean
@@ -69,7 +70,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
 
     @Bean
     public CorsFilter corsFilter() {

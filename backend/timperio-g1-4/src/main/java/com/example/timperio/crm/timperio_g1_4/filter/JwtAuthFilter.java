@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.timperio.crm.timperio_g1_4.service.JwtService;
-import com.example.timperio.crm.timperio_g1_4.service.UserService;
+import com.example.timperio.crm.timperio_g1_4.service.impl.UserServiceImpl;
 
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
@@ -23,7 +23,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private UserService userDetailsService;
+    private UserServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
