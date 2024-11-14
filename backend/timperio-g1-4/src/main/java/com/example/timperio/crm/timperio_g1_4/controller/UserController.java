@@ -1,5 +1,7 @@
 package com.example.timperio.crm.timperio_g1_4.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,6 +104,13 @@ public class UserController {
             return new ResponseEntity<String>("Incorrect password provided", HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @GetMapping("/admin/getAllUsers")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
 
     // To be modified to the conventions

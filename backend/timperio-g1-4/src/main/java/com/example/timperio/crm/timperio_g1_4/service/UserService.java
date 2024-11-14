@@ -1,5 +1,7 @@
 package com.example.timperio.crm.timperio_g1_4.service;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -10,7 +12,7 @@ import com.example.timperio.crm.timperio_g1_4.entity.User;
 public interface UserService {
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
-    // User getUserByUsername(String username) throws UsernameNotFoundException;
+    List<User> getAllUsers();
 
     User addUser(UserDto userDto);
 
