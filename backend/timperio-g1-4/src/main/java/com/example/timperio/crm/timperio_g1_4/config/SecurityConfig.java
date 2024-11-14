@@ -23,6 +23,7 @@ import org.springframework.web.filter.CorsFilter;
 import com.example.timperio.crm.timperio_g1_4.filter.JwtAuthFilter;
 import com.example.timperio.crm.timperio_g1_4.service.impl.UserServiceImpl;
 
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -38,15 +39,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/addNewUser").permitAll()
-                        .requestMatchers("/auth/createUser", "/auth/admin/**").hasAuthority("ROLE_ADMIN")
-                        .anyRequest().authenticated()) // Protect all other endpoints
-                .sessionManagement(sess -> sess
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/login", "/users/update-password").permitAll()
+                .requestMatchers("/auth/createUser", "/auth/admin/**").hasAuthority("ROLE_ADMIN")
+                .anyRequest().authenticated())
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class) // Ensure CorsFilter is first
+            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
