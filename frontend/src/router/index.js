@@ -7,6 +7,8 @@ import PurchaseHistory from '@/pages/PurchaseHistory.vue';
 import Admin from '@/pages/Admin.vue';
 import Analytics from '@/pages/Analytics.vue';
 import Marketing from '@/pages/Marketing.vue';
+import Profile from '@/pages/Profile.vue';
+
 
 const routes = [
   {
@@ -47,6 +49,11 @@ const routes = [
         path: 'marketing',
         name: 'Marketing',
         component: Marketing,
+      },
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: Profile,
       },
     ],
   },
