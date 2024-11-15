@@ -1,29 +1,26 @@
 <template>
-    <v-container fluid>
-      <v-card class="ma-4 pa-8" elevation="0">
-        <AccountsBar :selectedUser="selectedUser" />
-        <AccountsTable @user-selected="updateSelectedUser" />
-      </v-card>
-    </v-container>
-  </template>
-  
-  <script>
-  import AccountsBar from "@/components/AccountsBar.vue";
-  import AccountsTable from "@/components/AccountsTable.vue";
-  
-  export default {
-    components: { AccountsBar, AccountsTable },
-    data() {
-      return {
-        selectedUser: null,
-      };
+  <v-container fluid>
+    <v-card class="ma-4 pa-8" elevation="0">
+      <AdminTable :selectedUser="selectedUser" @updateSelectedUser="updateSelectedUser" />
+    </v-card>
+  </v-container>
+</template>
+
+<script>
+import AdminTable from "@/components/AdminTable.vue";
+
+export default {
+  components: { AdminTable },
+  data() {
+    return {
+      selectedUserDto: null, // Holds the selected user
+    };
+  },
+  methods: {
+    updateSelectedUser(user) {
+      console.log("Updating selectedUser:", user);
+      this.selectedUserDto = user;
     },
-    methods: {
-      updateSelectedUser(user) {
-        console.log("Updating selectedUser:", user); // Verify the received user data here
-        this.selectedUser = user;
-      },
-    },
-  };
-  </script>
-  
+  },
+};
+</script>

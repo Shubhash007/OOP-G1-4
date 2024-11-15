@@ -22,7 +22,8 @@
           <v-list-item-title>Purchase History</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/admin" prepend-icon="mdi-cog-outline" link class="p-6">
+        <!-- Conditionally render Admin menu item -->
+        <v-list-item v-if="isAdmin" to="/admin" prepend-icon="mdi-cog-outline" link class="p-6">
           <v-list-item-title>Admin</v-list-item-title>
         </v-list-item>
 
@@ -42,7 +43,6 @@
         <v-list-item to="" link @click="logout" prepend-icon="mdi-logout" class="p-6">
           <v-list-item-title>Logout</v-list-item-title>
         </v-list-item>
-
       </v-list>
     </v-navigation-drawer>
 
@@ -61,6 +61,7 @@ export default {
   data() {
     return {
       drawer: true,
+      isAdmin: false, // Initially set to false
     };
   },
   methods: {
@@ -70,7 +71,39 @@ export default {
 
       // Redirect to login page
       this.$router.push("/");
-    }
-  }
+    },
+    async checkUserRole() {
+      const jwtToken = localStorage.getItem("jwt_token");
+
+      if (jwtToken) {
+        try {
+          // Make the API call to get the user details
+          const response = await fetch("http://localhost:8080/auth/users/get-user", {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${jwtToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            const user = await response.json();
+            const userRole = user.role; // Assuming the role is in the user object
+            this.isAdmin = userRole === 'ROLE_ADMIN';
+          } else {
+            console.error("Failed to fetch user data");
+            this.isAdmin = false; // Default to false if the API call fails
+          }
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+          this.isAdmin = false; // Default to false if there's an error
+        }
+      }
+    },
+  },
+  created() {
+    this.checkUserRole(); // Check user role when the component is created
+  },
 };
 </script>
+

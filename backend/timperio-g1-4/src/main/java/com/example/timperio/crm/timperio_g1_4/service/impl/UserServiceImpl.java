@@ -81,7 +81,10 @@ public class UserServiceImpl implements UserDetailsService {
                 throw new BadCredentialsException("Cannot update admin user");
             }
             userUpdateRequest.getNewUsername().ifPresent(user::setUsername);
-            userUpdateRequest.getNewPassword().ifPresent(user::setPassword);
+            userUpdateRequest.getNewPassword().ifPresent(password -> {
+                String hashedPassword = encoder.encode(password); // Hash the password
+                user.setPassword(hashedPassword);
+            });            
             userUpdateRequest.getNewRole().ifPresent(user::setRole);
             userRepository.save(user);
             return true;
