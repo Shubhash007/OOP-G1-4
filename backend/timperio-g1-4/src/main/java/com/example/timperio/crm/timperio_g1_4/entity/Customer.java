@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,7 +39,8 @@ public class Customer {
     private Long customerId;
 
     @ElementCollection
-    @CollectionTable(name = "customer_zip_codes", joinColumns = @JoinColumn(name = "customer_id"))
+    @CollectionTable(name = "customer_zip_codes", joinColumns = @JoinColumn(name = "customer_id"), uniqueConstraints = @UniqueConstraint(columnNames = {
+            "customer_id", "zip_code" }))
     @Column(name = "zip_code")
     private List<Long> zipCode = new ArrayList<>(); // multiple addresses Integer array
 
