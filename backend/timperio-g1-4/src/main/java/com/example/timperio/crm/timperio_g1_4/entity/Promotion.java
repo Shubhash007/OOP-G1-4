@@ -1,18 +1,23 @@
 package com.example.timperio.crm.timperio_g1_4.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
+import com.example.timperio.crm.timperio_g1_4.enums.PromotionType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,28 +49,28 @@ public class Promotion {
     @Column(name = "valid_until", nullable = false)
     private LocalDate validUntil;
 
-    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    // @JoinColumn(name = "main_product_id", nullable = false, foreignKey = @ForeignKey(name = "FK_PromotionMainProduct"))
-    // private Product mainProduct;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "main_product_id", foreignKey = @ForeignKey(name = "FK_PromotionMainProduct"))
+    private Product mainProduct; // for discount or related product promotions
 
     @Column(name = "discount_rate", precision = 10, scale = 2)
-    private BigDecimal discountRate;
+    private BigDecimal discountRate; // for discount or related promotions
 
     @Column(name = "free_quantity")
-    private Integer freeQuantity;
+    private Integer freeQuantity; // for free promotions
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "promo_product_id", foreignKey = @ForeignKey(name = "FK_PromotionPromoProduct"))
-    // private Product promoProduct;
+    @Column(name = "buy_quantity")
+    private Integer buyQuantity; // for free promotions
 
-    // Optional: Add relationships if Promotion is referenced elsewhere
-}
-    
-enum PromotionType {
-    SEASONAL,
-    CLEARANCE,
-    NEW_ARRIVAL,
-    BUNDLE,
-    FLASH_SALE
+    @ManyToMany
+    @JoinTable(
+        name = "promotion_related_products",
+        joinColumns = @JoinColumn(name = "promotion_id"),
+        inverseJoinColumns = @JoinColumn(name = "related_product_id")
+    )
+    private List<Product> relatedProducts; // for related product promotions
+
+    @Column(name = "is_frequent_shopper_required")
+    private boolean isFrequentShopperRequired; // for related product promotions
 }
 
