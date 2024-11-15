@@ -54,9 +54,6 @@ public class Sale {
     @Column(name = "discounted_price", precision = 8, scale = 2)
     private BigDecimal discountedPrice;
 
-    @Column(name = "product_price")
-    private double productPrice;
-
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
