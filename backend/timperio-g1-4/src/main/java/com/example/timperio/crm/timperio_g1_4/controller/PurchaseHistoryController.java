@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.timperio.crm.timperio_g1_4.dto.SaleDto;
+import com.example.timperio.crm.timperio_g1_4.enums.SaleType;
 import com.example.timperio.crm.timperio_g1_4.service.impl.PurchaseHistoryServiceImpl;
 
 @RestController
@@ -29,5 +30,11 @@ public class PurchaseHistoryController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SaleDto>> getCustomerPurchaseHistory(Long customerId) {
         return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.filterByCustomer(customerId), HttpStatus.OK);
+    }
+
+    @GetMapping("/sale-type")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<SaleDto>> getSaleTypePurchaseHistory(SaleType saleType) {
+        return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.filterBySaleType(saleType), HttpStatus.OK);
     }
 }

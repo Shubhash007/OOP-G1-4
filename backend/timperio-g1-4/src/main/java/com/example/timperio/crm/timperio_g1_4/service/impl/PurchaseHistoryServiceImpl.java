@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.timperio.crm.timperio_g1_4.dto.SaleDto;
 import com.example.timperio.crm.timperio_g1_4.entity.Sale;
+import com.example.timperio.crm.timperio_g1_4.enums.SaleType;
 import com.example.timperio.crm.timperio_g1_4.mapper.SaleMapper;
 import com.example.timperio.crm.timperio_g1_4.repository.SaleRepository;
 import com.example.timperio.crm.timperio_g1_4.service.PurchaseHistoryService;
@@ -30,6 +31,15 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 
     public List<SaleDto> filterByCustomer(Long customerId) {
         List<Sale> saleList = saleRepository.findByCustomer_CustomerId(customerId);
+
+        // Map Sales entities to SaleDTOs
+        List<SaleDto> saleDtoList = saleList.stream().map(sale -> SaleMapper.mapToSaleDto(sale))
+                .collect(Collectors.toList());
+        return saleDtoList;
+    }
+
+    public List<SaleDto> filterBySaleType(SaleType saleType) {
+        List<Sale> saleList = saleRepository.findBySaleType(saleType);
 
         // Map Sales entities to SaleDTOs
         List<SaleDto> saleDtoList = saleList.stream().map(sale -> SaleMapper.mapToSaleDto(sale))
