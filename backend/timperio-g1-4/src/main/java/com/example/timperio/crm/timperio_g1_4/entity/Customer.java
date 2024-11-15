@@ -1,6 +1,9 @@
 package com.example.timperio.crm.timperio_g1_4.entity;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -27,7 +30,6 @@ import lombok.Setter;
 @Table(name = "customers")
 public class Customer {
 
-    
     // private Long id;
 
     @Id
@@ -50,8 +52,7 @@ public class Customer {
     private String email;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
     @Column(nullable = true)
     private List<Sale> sales = new ArrayList<>();
 }
-
-

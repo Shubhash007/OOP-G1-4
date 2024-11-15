@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.timperio.crm.timperio_g1_4.entity.Sale;
+import com.example.timperio.crm.timperio_g1_4.dto.SaleDto;
 import com.example.timperio.crm.timperio_g1_4.service.impl.PurchaseHistoryServiceImpl;
 
 @RestController
@@ -22,7 +22,7 @@ public class PurchaseHistoryController {
     // test endpoint
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<Sale>> getAllPurchaseHistory() {
-        return new ResponseEntity<>(purchaseHistoryService.getAllPurchaseHistory(), HttpStatus.OK);
+    public ResponseEntity<List<SaleDto>> getAllPurchaseHistory() {
+        return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.getAllPurchaseHistory(), HttpStatus.OK);
     }
 }
