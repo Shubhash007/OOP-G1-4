@@ -1,7 +1,10 @@
 package com.example.timperio.crm.timperio_g1_4.entity;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -42,5 +44,6 @@ public class Product {
     private BigDecimal price;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Sale> sales = new ArrayList<>();
 }
