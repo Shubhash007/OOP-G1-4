@@ -19,10 +19,15 @@ public class PurchaseHistoryController {
     @Autowired
     private PurchaseHistoryServiceImpl purchaseHistoryService;
 
-    // test endpoint
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SaleDto>> getAllPurchaseHistory() {
         return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.getAllPurchaseHistory(), HttpStatus.OK);
+    }
+
+    @GetMapping("/customer")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<SaleDto>> getCustomerPurchaseHistory(Long customerId) {
+        return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.filterByCustomer(customerId), HttpStatus.OK);
     }
 }
