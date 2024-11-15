@@ -18,6 +18,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.example.timperio.crm.timperio_g1_4.enums.SaleType;
+import com.example.timperio.crm.timperio_g1_4.enums.ShippingMethod;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,7 +38,7 @@ public class Sale {
     private Date saleDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "sale_type", nullable = false)
+    @Column(name = "sale_type")
     private SaleType saleType;
 
     @Enumerated(EnumType.STRING)
@@ -65,18 +68,4 @@ public class Sale {
     @ManyToOne
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
-}
-
-enum ShippingMethod {
-    STANDARD_DELIVERY,
-    SELF_COLLECT,
-    SAME_DAY_DELIVERY
-}
-
-enum SaleType {
-    DIRECT_B2B,
-    CONSIGNMENT,
-    MARKETING,
-    DIRECT_B2C,
-    WHOLESALER
 }
