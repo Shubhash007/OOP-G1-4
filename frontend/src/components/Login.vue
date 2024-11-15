@@ -42,7 +42,7 @@ export default {
         const token = localStorage.getItem("jwt_token");
         if (token) {
             // Optionally, add token validation logic here if needed
-            this.$router.push('/home'); // Redirect if a token exists
+            this.$router.push('/purchaseHistory'); // Redirect if a token exists
         }
     },
     methods: {
@@ -73,7 +73,7 @@ export default {
 
                 const token = await response.text();
                 localStorage.setItem("jwt_token", token);
-                this.$router.push('/home');
+                this.$router.push('/purchaseHistory');
             } catch (error) {
                 console.error("Login error:", error);
                 this.errorMessage = "An unexpected error occurred. Please try again.";

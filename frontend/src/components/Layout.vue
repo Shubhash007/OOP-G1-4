@@ -14,9 +14,6 @@
 
     <v-navigation-drawer v-model="drawer" app permanent class="pt-1">
       <v-list nav dense>
-        <v-list-item to="/home" prepend-icon="mdi-home-outline" link class="p-6">
-          <v-list-item-title>Home</v-list-item-title>
-        </v-list-item>
 
         <v-list-item to="/purchaseHistory" prepend-icon="mdi-history" link class="p-6">
           <v-list-item-title>Purchase History</v-list-item-title>
