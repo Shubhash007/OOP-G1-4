@@ -22,8 +22,11 @@ public class User {
 
     }
 
-    public User(Long rowNo, String username2, String password2, String role2) {
-        // TODO Auto-generated constructor stub
+    // alternative constructor to return user info without password
+    public User(Long rowNo, String username, Role role) {
+        this.userId = rowNo;
+        this.username = username;
+        this.role = role;
     }
 
     @Id
