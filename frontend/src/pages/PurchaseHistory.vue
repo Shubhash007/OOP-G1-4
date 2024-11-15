@@ -16,9 +16,7 @@
 <script>
     export default {
         methods: {
-            // goToPage() {
-            //     this.$router.push('/home');
-            // },
+
         },
     };
 </script>
