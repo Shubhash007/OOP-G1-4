@@ -16,7 +16,7 @@ import com.example.timperio.crm.timperio_g1_4.dto.PromotionDto;
 import com.example.timperio.crm.timperio_g1_4.service.PromotionService;
 
 @RestController
-@RequestMapping("/sale/promotions")
+@RequestMapping("/sales/promotions")
 public class PromotionController {
 
     @Autowired

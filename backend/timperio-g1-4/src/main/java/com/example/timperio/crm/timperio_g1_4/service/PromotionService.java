@@ -100,14 +100,14 @@ public class PromotionService {
 
         // Set main product id
         if (promotion.getMainProduct() != null) {
-            promotionDto.setMainProductId(promotion.getMainProduct().getId());
+            promotionDto.setMainProductId(promotion.getMainProduct().getProductId());
         }
 
         // Set related product ids
         if (promotion.getRelatedProducts() != null) {
             promotionDto.setRelatedProductIds(
                 promotion.getRelatedProducts().stream()
-                    .map(product -> product.getId())
+                    .map(product -> product.getProductId())
                     .collect(Collectors.toList())
             );
         }
