@@ -1,5 +1,7 @@
 package com.example.timperio.crm.timperio_g1_4.controller;
 
+import java.io.IOException;
+import org.springframework.http.HttpHeaders;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.timperio.crm.timperio_g1_4.dto.SaleDto;
 import com.example.timperio.crm.timperio_g1_4.entity.FilterRequest;
 import com.example.timperio.crm.timperio_g1_4.service.impl.PurchaseHistoryServiceImpl;
+import com.example.timperio.crm.utils.PurchaseHistoryCSVExporter;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/purchase-history")
@@ -37,6 +42,25 @@ public class PurchaseHistoryController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
 
+    @PostMapping("/export-csv")
+    @PreAuthorize("isAuthenticated()")
+    public void exportToCSV(@RequestBody FilterRequest filterRequest, HttpServletResponse response)
+            throws IOException, Exception {
+        List<SaleDto> purchaseHistoryList;
+
+        try {
+            purchaseHistoryList = purchaseHistoryService.filterPurchaseHistory(filterRequest);
+        } catch (Exception e) {
+            throw new Exception("Something went wrong with the Purchase History Filter.");
+        }
+
+        // set response headers
+        response.setContentType("text/csv");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=sales_data.csv");
+
+        // Write CSV to response output stream
+        PurchaseHistoryCSVExporter.exportToCSV(response.getWriter(), purchaseHistoryList);
     }
 }
