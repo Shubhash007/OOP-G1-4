@@ -4,6 +4,7 @@
         <v-card class="ma-4 pa-8" elevation="0">
             <MarketingBar></MarketingBar>
             <MarketingTable></MarketingTable>
+            <Promotions></Promotions>
         </v-card>
     </v-container>
 </template>
