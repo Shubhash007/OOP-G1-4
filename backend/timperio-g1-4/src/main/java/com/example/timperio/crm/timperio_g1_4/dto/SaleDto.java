@@ -1,7 +1,7 @@
 package com.example.timperio.crm.timperio_g1_4.dto;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Date;
 
 import com.example.timperio.crm.timperio_g1_4.entity.Customer;
 import com.example.timperio.crm.timperio_g1_4.entity.Product;

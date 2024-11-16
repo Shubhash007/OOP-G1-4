@@ -1,5 +1,6 @@
 package com.example.timperio.crm.timperio_g1_4.service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +16,6 @@ public interface PurchaseHistoryService {
     List<SaleDto> filterBySaleType(SaleType saleType);
 
     List<SaleDto> filterByValue(Optional<Double> minValue, Optional<Double> maxValue);
+
+    List<SaleDto> filterByDate(Date startDate, Date endDate);
 }

@@ -1,5 +1,7 @@
 package com.example.timperio.crm.timperio_g1_4.controller;
 
+import java.text.SimpleDateFormat;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +45,28 @@ public class PurchaseHistoryController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SaleDto>> getValuePurchaseHistory(Optional<Double> minValue, Optional<Double> maxValue) {
         return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.filterByValue(minValue, maxValue),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/date")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getDatePurchaseHistory(Optional<String> startDate, Optional<String> endDate) {
+        // convert strings to date
+        Date convertedStartDate = null;
+        Date convertedEndDate = null;
+
+        if (startDate.isPresent() && endDate.isPresent()) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                convertedStartDate = new Date(sdf.parse(startDate.get()).getTime());
+                convertedEndDate = new Date(sdf.parse(endDate.get()).getTime());
+            } catch (Exception e) {
+                return new ResponseEntity<String>("Invalid date format", HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        return new ResponseEntity<List<SaleDto>>(
+                purchaseHistoryService.filterByDate(convertedStartDate, convertedEndDate),
                 HttpStatus.OK);
     }
 }

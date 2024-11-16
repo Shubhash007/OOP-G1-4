@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Date;
 
 import com.example.timperio.crm.timperio_g1_4.enums.SaleType;
 import com.example.timperio.crm.timperio_g1_4.enums.ShippingMethod;

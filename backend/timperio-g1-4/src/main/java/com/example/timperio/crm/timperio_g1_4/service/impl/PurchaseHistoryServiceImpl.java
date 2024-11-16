@@ -1,6 +1,7 @@
 package com.example.timperio.crm.timperio_g1_4.service.impl;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,6 +65,31 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
                         boolean isBelowMax = !maxValue.isPresent()
                                 || priceToCompare.compareTo(BigDecimal.valueOf(maxValue.get())) <= 0;
                         return isAboveMin && isBelowMax;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        // Map Sales entities to SaleDTOs
+        List<SaleDto> saleDtoList = saleList.stream().map(sale -> SaleMapper.mapToSaleDto(sale))
+                .collect(Collectors.toList());
+        return saleDtoList;
+    }
+
+    public List<SaleDto> filterByDate(Date convertedStartDate, Date convertedEndDate) {
+        List<Sale> saleList = saleRepository.findAll();
+
+        // Filter Sales entities by date
+        if (convertedStartDate != null || convertedEndDate != null) {
+            saleList = saleList.stream()
+                    .filter(sale -> {
+                        Date saleDate = sale.getSaleDate();
+                        // check against startDate if present
+                        boolean isAfterStart = convertedStartDate == null
+                                || saleDate.compareTo(convertedStartDate) >= 0;
+                        // check against endDate if present
+                        boolean isBeforeEnd = convertedEndDate == null
+                                || saleDate.compareTo(convertedEndDate) <= 0;
+                        return isAfterStart && isBeforeEnd;
                     })
                     .collect(Collectors.toList());
         }
