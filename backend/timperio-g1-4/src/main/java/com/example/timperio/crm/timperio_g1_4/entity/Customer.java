@@ -1,6 +1,9 @@
 package com.example.timperio.crm.timperio_g1_4.entity;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -14,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +31,6 @@ import lombok.Setter;
 @Table(name = "customers")
 public class Customer {
 
-    
     // private Long id;
 
     @Id
@@ -36,7 +39,8 @@ public class Customer {
     private Long customerId;
 
     @ElementCollection
-    @CollectionTable(name = "customer_zip_codes", joinColumns = @JoinColumn(name = "customer_id"))
+    @CollectionTable(name = "customer_zip_codes", joinColumns = @JoinColumn(name = "customer_id"), uniqueConstraints = @UniqueConstraint(columnNames = {
+            "customer_id", "zip_code" }))
     @Column(name = "zip_code")
     private List<Long> zipCode = new ArrayList<>(); // multiple addresses Integer array
 
@@ -50,8 +54,7 @@ public class Customer {
     private String email;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
     @Column(nullable = true)
     private List<Sale> sales = new ArrayList<>();
 }
-
-
