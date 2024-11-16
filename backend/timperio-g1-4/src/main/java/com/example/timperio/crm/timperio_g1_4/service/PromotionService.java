@@ -1,16 +1,19 @@
 package com.example.timperio.crm.timperio_g1_4.service;
 
-import com.example.timperio.crm.timperio_g1_4.dto.PromotionDto;
-import com.example.timperio.crm.timperio_g1_4.entity.Promotion;
-import com.example.timperio.crm.timperio_g1_4.enums.PromotionType;
-import com.example.timperio.crm.timperio_g1_4.repository.PromotionRepository;
-import com.example.timperio.crm.timperio_g1_4.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.timperio.crm.timperio_g1_4.dto.PromotionDto;
+import com.example.timperio.crm.timperio_g1_4.entity.Product;
+import com.example.timperio.crm.timperio_g1_4.entity.Promotion;
+import com.example.timperio.crm.timperio_g1_4.repository.ProductRepository;
+import com.example.timperio.crm.timperio_g1_4.repository.PromotionRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PromotionService {
@@ -38,7 +41,14 @@ public class PromotionService {
 
         // Handle main product if applicable
         if (promotionDto.getMainProductId() != null) {
-            promotion.setMainProduct(productRepository.findById(promotionDto.getMainProductId()).orElse(null));
+            Product mainProduct = productRepository.findById(promotionDto.getMainProductId())
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+            
+            promotion.setMainProduct(mainProduct);
+
+    promotion.setMainProduct(mainProduct);        }
+        else{
+            throw new IllegalArgumentException("Please choose a product for the promotion.");
         }
 
         // Handle related products if applicable

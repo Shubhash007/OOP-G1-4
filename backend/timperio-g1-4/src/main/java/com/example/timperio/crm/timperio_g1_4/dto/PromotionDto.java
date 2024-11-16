@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.timperio.crm.timperio_g1_4.enums.PromotionType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
