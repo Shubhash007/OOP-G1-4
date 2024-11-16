@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timperio Olive Oil Newsletter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .header img {
+            max-width: 200px;
+        }
+        .hero {
+            background-size: cover;
+            background-position: center;
+            padding: 40px;
+            color: #144109;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .hero h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        .content {
+            padding: 20px 0;
+            text-align: left;
+            color: #333333;
+        }
+        .content h2 {
+            color: #144109;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            color: white;
+            background-color: #144109;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666666;
+            font-size: 12px;
+        }
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="Timperio Logo" />
+        </div>
+
+        <div class="hero">
+            <h1>Discover the Taste of Authentic Italian Olive Oil</h1>
+            <p>Pure, fresh, and crafted with care since 1943.</p>
+        </div>
+
+        <div class="content">
+            <h2>Welcome to Timperio</h2>
+            <p>Dear <span th:text="${customerName}"></span>,</p> <!-- Dynamic customer name -->
+            <p>
+                We're delighted to have you in our community. At Timperio, we believe that exceptional olive oil enhances the quality of life and brings people together. Our olives are handpicked in the heart of Italy, ensuring each bottle is filled with the pure essence of nature.
+            </p>
+            <h2>Recommendations for you</h2>
+            <ul>
+                <li th:each="product : ${recommendedProducts}">
+                    <strong th:text="${product.name}"></strong> - <span th:text="${product.description}"></span>
+                </li> <!-- Dynamic product recommendations -->
+            </ul>
+            <a th:href="@{${shopUrl}}" class="button">Shop Now</a> <!-- Dynamic shop URL -->
+        </div>
+
+        <div class="footer">
+            <p>&copy; Copyright @ 2024 Timperio Snc</p>
+            <p>21 Woodlands Close PRIMZ Bizhub, #02-28 Singapore 737854 <a href="mailto:info@timperio.com">info@timperio.com</a> | <a href="tel:+123456789">+39 0874 730191 P.IVA</p>
+            <p><a th:href="@{${unsubscribeUrl}}">Unsubscribe</a></p> <!-- Dynamic unsubscribe link -->
+        </div>
+    </div>
+</body>
+</html>

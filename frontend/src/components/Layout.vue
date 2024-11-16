@@ -2,16 +2,18 @@
   <v-app>
     <v-app-bar app>
       <v-row class="align-center">
+
         <v-col cols="auto">
-          <v-img src="@/assets/logo.png" alt="Logo" max-width="80"></v-img>
         </v-col>
 
         <v-col cols="auto">
           <v-btn icon="mdi-menu" variant="text" @click.stop="drawer = !drawer"></v-btn>
         </v-col>
+        
+        <v-img :src="logo" alt="Logo" max-width="80"></v-img>
+
       </v-row>
     </v-app-bar>
-
     <v-navigation-drawer v-model="drawer" app permanent class="pt-1">
       <v-list nav dense>
 
@@ -57,11 +59,14 @@
 </template>
 
 <script>
+import timperioLogo from '@/assets/logo.png';
+
 export default {
   name: "Layout",
   data() {
     return {
       drawer: true,
+      logo: timperioLogo,
       isAdmin: false, // Initially set to false
     };
   },

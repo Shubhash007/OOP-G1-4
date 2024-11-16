@@ -4,5 +4,6 @@ import com.example.timperio.crm.timperio_g1_4.entity.Customer;
 
 
 public interface CustomerRepository extends JpaRepository<Customer,Long> {
+    Optional<Customer> findByCustomerId(Long customerId); // Explicitly define this method
 
 }
