@@ -19,10 +19,7 @@
           <v-list-item-title>Purchase History</v-list-item-title>
         </v-list-item>
 
-        <!-- Conditionally render Admin menu item -->
-        <v-list-item v-if="isAdmin" to="/admin" prepend-icon="mdi-cog-outline" link class="p-6">
-          <v-list-item-title>Admin</v-list-item-title>
-        </v-list-item>
+
 
         <v-list-item to="/analytics" prepend-icon="mdi-chart-bar" link class="p-6">
           <v-list-item-title>Analytics</v-list-item-title>
@@ -32,10 +29,17 @@
           <v-list-item-title>Marketing</v-list-item-title>
         </v-list-item>
 
+        <v-list-item to="/newsletters" prepend-icon="mdi-email-newsletter" link class="p-6">
+          <v-list-item-title>Newsleters</v-list-item-title>
+        </v-list-item>
+
         <v-list-item to="/profile" prepend-icon="mdi-account" link class="p-6">
           <v-list-item-title>Profile</v-list-item-title>
         </v-list-item>
-
+        <!-- Conditionally render Admin menu item -->
+        <v-list-item v-if="isAdmin" to="/admin" prepend-icon="mdi-cog-outline" link class="p-6">
+          <v-list-item-title>Admin</v-list-item-title>
+        </v-list-item>
         <!-- Logout Button -->
         <v-list-item to="" link @click="logout" prepend-icon="mdi-logout" class="p-6">
           <v-list-item-title>Logout</v-list-item-title>

@@ -1,36 +1,30 @@
 <template>
-<v-row class="pa-4 align-center">
-  <v-col cols="12" md="5">
-    <v-text-field
-      variant="outlined"
-      v-model="searchQuery"
-      label="Search user name"
-      prepend-inner-icon="mdi-magnify"
-      hide-details
-      full-width
-    ></v-text-field>
-  </v-col>
+  <v-row class="pa-4 align-center">
+    <v-col cols="12" md="5">
+      <v-text-field variant="outlined" v-model="searchQuery" label="Search user name" prepend-inner-icon="mdi-magnify"
+        hide-details full-width></v-text-field>
+    </v-col>
 
-  <v-col cols="4" md="2">
-    <v-btn color="secondary" class="ml-0" block @click="openUpdateDialog" :disabled="!selected">
-      <v-icon class="mr-2" left>mdi-update</v-icon>
-      Update
-    </v-btn>
-  </v-col>
-  <v-col cols="4" md="2">
-    <v-btn color="disabled" class="ml-0" block @click="deleteUser" :disabled="!selected">
-      <v-icon class="mr-2" left>mdi-delete</v-icon>
-      Delete
-    </v-btn>
-  </v-col>
-  <v-col cols="4" md="3">
-    <v-btn color="primary" class="ml-0" block @click="showCreateAccountDialog = true">
-      <v-icon class="mr-2">mdi-account-plus</v-icon>
-      Create Account
-    </v-btn>
-  </v-col>
+    <v-col cols="4" md="2">
+      <v-btn color="secondary" class="ml-0" block @click="openUpdateDialog" :disabled="!selected">
+        <v-icon class="mr-2" left>mdi-update</v-icon>
+        Update
+      </v-btn>
+    </v-col>
+    <v-col cols="4" md="2">
+      <v-btn color="disabled" class="ml-0" block @click="deleteUser" :disabled="!selected">
+        <v-icon class="mr-2" left>mdi-delete</v-icon>
+        Delete
+      </v-btn>
+    </v-col>
+    <v-col cols="4" md="3">
+      <v-btn color="primary" class="ml-0" block @click="showCreateAccountDialog = true">
+        <v-icon class="mr-2">mdi-account-plus</v-icon>
+        Create Account
+      </v-btn>
+    </v-col>
 
-</v-row>
+  </v-row>
 
 
   <v-alert v-if="successMessage" type="success" class="mt-4" dense>
@@ -110,6 +104,7 @@ export default {
       errorMessage: '',
     };
   },
+  
   computed: {
     selectedUserDto() {
       if (Array.isArray(this.selected) && this.selected.length === 1) {
@@ -118,13 +113,16 @@ export default {
       }
       return null;
     },
+
     filteredItems() {
       return this.searchQuery
-        ? this.items.filter((item) =>
-          item.username.toLowerCase().includes(this.searchQuery.toLowerCase())
-        )
-        : this.items;
-    },
+        ? this.items
+          .filter((item) =>
+            item.username.toLowerCase().includes(this.searchQuery.toLowerCase())
+          )
+          .map(({ password, ...rest }) => rest)
+        : this.items.map(({ password, ...rest }) => rest);
+    }
   },
   async created() {
     await this.fetchUsers();
@@ -160,9 +158,11 @@ export default {
         console.error("Error fetching users:", error);
       }
     },
+
     getRoleColor(role) {
       return role === "ROLE_ADMIN" ? "red" : role === "ROLE_SALES" ? "blue" : "green";
     },
+
     openUpdateDialog() {
       if (this.selectedUserDto) {
         this.newUserName = this.selectedUserDto.username;
