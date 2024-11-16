@@ -1,5 +1,6 @@
 package com.example.timperio.crm.timperio_g1_4.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,6 +41,32 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 
     public List<SaleDto> filterBySaleType(SaleType saleType) {
         List<Sale> saleList = saleRepository.findBySaleType(saleType);
+
+        // Map Sales entities to SaleDTOs
+        List<SaleDto> saleDtoList = saleList.stream().map(sale -> SaleMapper.mapToSaleDto(sale))
+                .collect(Collectors.toList());
+        return saleDtoList;
+    }
+
+    public List<SaleDto> filterByValue(Optional<Double> minValue, Optional<Double> maxValue) {
+        List<Sale> saleList = saleRepository.findAll();
+
+        // Filter Sales entities by value
+        if (minValue.isPresent() || maxValue.isPresent()) {
+            saleList = saleList.stream()
+                    .filter(sale -> {
+                        BigDecimal priceToCompare = sale.getDiscountedPrice() != null ? sale.getDiscountedPrice()
+                                : sale.getOriginalPrice();
+                        // check against minValue if present
+                        boolean isAboveMin = !minValue.isPresent()
+                                || priceToCompare.compareTo(BigDecimal.valueOf(minValue.get())) >= 0;
+                        // check against maxValue if present
+                        boolean isBelowMax = !maxValue.isPresent()
+                                || priceToCompare.compareTo(BigDecimal.valueOf(maxValue.get())) <= 0;
+                        return isAboveMin && isBelowMax;
+                    })
+                    .collect(Collectors.toList());
+        }
 
         // Map Sales entities to SaleDTOs
         List<SaleDto> saleDtoList = saleList.stream().map(sale -> SaleMapper.mapToSaleDto(sale))

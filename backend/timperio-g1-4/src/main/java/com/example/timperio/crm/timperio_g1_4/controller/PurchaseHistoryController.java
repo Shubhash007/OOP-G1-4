@@ -1,6 +1,7 @@
 package com.example.timperio.crm.timperio_g1_4.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,5 +37,12 @@ public class PurchaseHistoryController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SaleDto>> getSaleTypePurchaseHistory(SaleType saleType) {
         return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.filterBySaleType(saleType), HttpStatus.OK);
+    }
+
+    @GetMapping("/value")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<SaleDto>> getValuePurchaseHistory(Optional<Double> minValue, Optional<Double> maxValue) {
+        return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.filterByValue(minValue, maxValue),
+                HttpStatus.OK);
     }
 }
