@@ -1,7 +1,10 @@
 package com.example.timperio.crm.timperio_g1_4.service.impl;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.timperio.crm.timperio_g1_4.dto.CustomerDto;
 import com.example.timperio.crm.timperio_g1_4.entity.Customer;
+import com.example.timperio.crm.timperio_g1_4.entity.Sale;
 import com.example.timperio.crm.timperio_g1_4.mapper.CustomerMapper;
 import com.example.timperio.crm.timperio_g1_4.repository.CustomerRepository;
 import com.example.timperio.crm.timperio_g1_4.service.CustomerService;
@@ -20,6 +24,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     // @Override
     // @Transactional
@@ -76,7 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
         // create the 3 categories as such
         List<CustomerDto> frequentCustomers = new ArrayList<>();
         List<CustomerDto> occasionalCustomers = new ArrayList<>();
-        List<CustomerDto> rareCustomers = new ArrayList<>();
+        List<CustomerDto> oneTimeCustomers = new ArrayList<>();
 
         List<Customer> customers = customerRepository.findAll();
         for (Customer customer : customers) {
@@ -87,23 +93,41 @@ public class CustomerServiceImpl implements CustomerService {
                 // if the customer has never made a purchase, skip
                 continue;
             }
-            if (purchaseCount >= 5) {
-                // if the customer has made 5 or more purchases, frequent customer
+            int monthCount = 0;
+            int quarterCount = 0;
+            // retrieve the sales for the customer
+            for (Sale sale : customer.getSales()) {
+                LocalDate date = sale.getSaleDate();
+
+                if (date.isAfter(LocalDate.now().minusMonths(1))) {
+                    // if the sale is within the last 6 months, increment the purchase count
+                    monthCount++;
+                }
+                if (date.isAfter(LocalDate.now().minusMonths(3))) {
+                    // if the sale is within the last 3 months, increment the purchase count
+                    quarterCount++;
+                }
+            }
+
+            if (purchaseCount == 1) {
+                // if the customer has made only 1 purchase, one-time buyer
+                oneTimeCustomers.add(customerDto);
+            }
+            if (monthCount >= 10) {
+                // if the customer has made 10 or more purchases in the last month, frequent
+                // shopper
                 frequentCustomers.add(customerDto);
             }
-            if (purchaseCount >= 2 && purchaseCount < 5) {
-                // if the customer has made 2 to 4 purchases, occasional customer
+            if (quarterCount >= 3 && quarterCount <= 5) {
+                // if the customer has made 3-5 purchases in the last quarter, occasional
+                // shopper
                 occasionalCustomers.add(customerDto);
-            }
-            if (purchaseCount == 1) {
-                // if the customer has made only 1 purchase, rare customer
-                rareCustomers.add(customerDto);
             }
         }
 
-        customerList.put("frequentCustomers", frequentCustomers);
-        customerList.put("occasionalCustomers", occasionalCustomers);
-        customerList.put("rareCustomers", rareCustomers);
+        customerList.put("Frequent Shoppers", frequentCustomers);
+        customerList.put("Occasional Shoppers", occasionalCustomers);
+        customerList.put("One-Time Buyers", oneTimeCustomers);
         return customerList;
     }
 

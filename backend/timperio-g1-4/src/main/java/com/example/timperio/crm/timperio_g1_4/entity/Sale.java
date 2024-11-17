@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 
 import com.example.timperio.crm.timperio_g1_4.enums.SaleType;
 import com.example.timperio.crm.timperio_g1_4.enums.ShippingMethod;
@@ -35,7 +35,7 @@ public class Sale {
     private Long saleId;
 
     @Column(name = "sale_date")
-    private Date saleDate;
+    private LocalDate saleDate;
 
     @Column(name = "zip_code")
     private Long zipCode;
