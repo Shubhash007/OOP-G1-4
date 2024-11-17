@@ -1,19 +1,16 @@
 <template>
-    <v-container fluid >
-        <!-- <v-btn color="primary" @click="goToPage">
-        Go to Home Page
-        </v-btn> -->
-        <v-card class="d-flex ma-4 px-8 justify-end" elevation="0">
-            <v-btn prepend-icon="mdi-download-circle" color="secondary">Export to CSV</v-btn>
-        </v-card>
+    <v-container fluid>
+
         <v-card class="ma-4 pa-8" elevation="0">
-            <PurchaseHistoryBar></PurchaseHistoryBar>
-            <Table></Table>
+            <PurchaseHistoryTable></PurchaseHistoryTable>
         </v-card>
-    </v-container>
+        </v-container>
+        
 </template>
     
 <script>
+import PurchaseHistoryTable from '@/components/PurchaseHistoryTable.vue';
+
     export default {
         methods: {
 
