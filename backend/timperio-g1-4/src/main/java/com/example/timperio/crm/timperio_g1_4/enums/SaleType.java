@@ -5,5 +5,6 @@ public enum SaleType {
     CONSIGNMENT,
     MARKETING,
     DIRECT_B2C,
-    WHOLESALER
+    WHOLESALER,
+    NOT_APPLICABLE
 }
