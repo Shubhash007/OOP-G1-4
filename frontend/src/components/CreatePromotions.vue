@@ -147,8 +147,12 @@
                 </v-form>
 
                 <!-- Display error message if there is one -->
-                <v-alert v-if="errorPromotion" type="error" dismissible class="mt-4">
+                <v-alert v-if="errorMessage" type="error" dismissible class="mt-4">
                     {{ errorMessage }}
+                </v-alert>
+
+                <v-alert v-if="successMessage" type="success" dismissible class="mt-4">
+                    {{ successMessage }}
                 </v-alert>
 
                 <!-- Submit Button -->
@@ -162,11 +166,11 @@
 
 <script>
 export default {
-    name: "Promotions",
+    name: "CreatePromotions",
     data() {
         return {
-            errorPromotion: false,
             errorMessage: '',
+            successMessage: '',
             promotion: {
                 promotionName: '',
                 promotionDescription: '',
@@ -214,15 +218,39 @@ export default {
             
         } catch (error) {
             console.error("Error fetching products:", error);
-            this.errorMessage = "Failed to load products.";
-            this.errorPromotion = true;
+            this.showErrorAlert("Failed to load products.");
         }
     },
     methods: {
-        async createPromotion() {
-            this.errorPromotion = false;
+        showSuccessAlert(message) {
+            this.successMessage = message;
+            // Set timeout to hide the alert after 3 seconds (3000 ms)
+            setTimeout(() => {
+            this.successMessage = '';
+            }, 3000);
+        },
+        showErrorAlert(message) {
+            this.errorMessage = message;
+            // Set timeout to hide the alert after 3 seconds (3000 ms)
+            setTimeout(() => {
             this.errorMessage = '';
-
+            }, 3000);
+        },
+        clearForm(){
+            this.promotion = {
+                promotionName: '',
+                promotionDescription: '',
+                promotionType: '',
+                validUntil: '',
+                discountRate: null,
+                freeQuantity: null,
+                buyQuantity: null,
+                mainProduct: null,  // Reset the main product object
+                relatedProducts: [], // Reset the related products array
+                frequentShopperRequired: false, // Reset the boolean flag
+                };
+        },
+        async createPromotion() {
             // Prepare the payload for the POST request
             const payload = {
                 promotionName: this.promotion.promotionName,
@@ -252,27 +280,31 @@ export default {
                     body: JSON.stringify(payload)
                 });
 
-                if (!response.ok) {
-                    // Handle different types of errors
-                    if (response.status === 400) {
-                        this.errorMessage = "Invalid input data.";
-                    } else if (response.status >= 500) {
-                        this.errorMessage = "Server error. Please try again later.";
-                    } else {
-                        this.errorMessage = "Error creating promotion.";
-                    }
-                    this.errorPromotion = true;
+                console.log(response, response.status);
+
+                if (response.status==201) {
+                    // Success message
+                    this.showSuccessAlert("Promotion created successfully!");
+                    this.$emit('refresh');
+                    this.clearForm();
                     return;
                 }
-
-                // Success message
-                this.errorMessage = "Promotion created successfully!";
-                this.errorPromotion = false;
+                else{  
+                    // Handle different types of errors
+                    if (response.status === 400) {
+                        this.showErrorAlert("Invalid input data.");
+                    } else if (response.status >= 500) {
+                        this.showErrorAlert("Server error. Please try again later.");
+                    } else {
+                        this.showErrorAlert("Error creating promotion.");
+                    }
+                    return;
+                }
+                
             } catch (error) {
                 // Catch network or unexpected errors
                 console.error("Error creating promotion:", error);
-                this.errorMessage = "An unexpected error occurred. Please try again.";
-                this.errorPromotion = true;
+                this.showErrorAlert("An unexpected error occurred. Please try again.");
             }
         },
         filterMainProduct() {

@@ -85,6 +85,28 @@ public class PromotionService {
         }
     }
 
+    // method to delete multiple promotions by array of ids
+    public boolean deletePromotions(List<Long> ids) {
+        boolean allDeleted = true;
+        for (Long id : ids) {
+            boolean isDeleted = deletePromotion(id); // Call the existing delete logic for each ID
+            if (!isDeleted) {
+                allDeleted = false; // If any deletion fails, mark as partial success
+            }
+        }
+        return allDeleted;
+    }
+
+    // method to delete a single promotion
+    public boolean deletePromotion(Long id) {
+        Optional<Promotion> promotion = promotionRepository.findById(id);
+        if (promotion.isPresent()) {
+            promotionRepository.delete(promotion.get());
+            return true;
+        }
+        return false;
+    }
+
     // method to map entity to DTO
     private PromotionDto mapToDto(Promotion promotion) {
         PromotionDto promotionDto = new PromotionDto();

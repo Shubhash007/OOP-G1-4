@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +46,17 @@ public class PromotionController {
             return new ResponseEntity<>(promotionDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // endpoint to delete multiple promotions by IDs
+    @DeleteMapping
+    public ResponseEntity<Void> deletePromotions(@RequestBody List<Long> ids) {
+        boolean allDeleted = promotionService.deletePromotions(ids);
+        if (allDeleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 No Content
+        } else {
+            return new ResponseEntity<>(HttpStatus.PARTIAL_CONTENT); // 206 Partial Content
         }
     }
 }

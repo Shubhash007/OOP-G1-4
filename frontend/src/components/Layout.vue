@@ -32,6 +32,10 @@
           <v-list-item-title>Marketing</v-list-item-title>
         </v-list-item>
 
+        <v-list-item to="/promotions" prepend-icon="mdi-currency-usd" link class="p-6">
+          <v-list-item-title>Promotions</v-list-item-title>
+        </v-list-item>
+
         <v-list-item to="/profile" prepend-icon="mdi-account" link class="p-6">
           <v-list-item-title>Profile</v-list-item-title>
         </v-list-item>
