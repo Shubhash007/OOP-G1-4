@@ -31,7 +31,7 @@
     {{ successMessage }}
   </v-alert>
 
-  <v-data-table :items="filteredItems" item-value="username" show-select items-per-page="8" select-strategy="single"
+  <v-data-table :items="filteredItems" item-value="username" show-select items-per-page="10" select-strategy="single"
     v-model="selected">
     <template v-slot:item.role="{ item }">
       <v-chip :color="getRoleColor(item.role)" dark>{{ item.role }}</v-chip>

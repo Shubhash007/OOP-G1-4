@@ -1,13 +1,24 @@
 <template>
     <v-row justify="end" class="mb-4">
         <v-col cols="auto">
-            <v-btn color="primary" @click="fetchFilteredData">Search</v-btn>
+            <v-btn color="primary" @click="fetchFilteredData">Search Filters</v-btn>
         </v-col>
         <v-col cols="auto">
-            <v-btn color="secondary" @click="exportToCSV">Export to CSV</v-btn>
+            <v-btn color="secondary" @click="openFileDialog" prepend-icon="mdi-upload-box-outline">
+                Import CSV
+            </v-btn>
+            <input type="file" ref="fileInput" accept=".csv" style="display: none;" @change="importCSV" />
+        </v-col>
+        <v-col cols="auto">
+            <v-btn color="secondary" @click="exportToCSV" prepend-icon="mdi-download-box-outline">Export to CSV</v-btn>
         </v-col>
     </v-row>
 
+    <v-row>
+        <v-alert v-if="importMessage" :type="importStatus" dismissible>
+            {{ importMessage }}
+        </v-alert>
+    </v-row>
 
     <v-row>
         <v-col cols="12" sm="6" md="2">
@@ -75,6 +86,10 @@ export default {
             filters: ["DIRECT_B2B", "DIRECT_B2C", "CONSIGNMENT", "MARKETING", "WHOLESALER"],
             startDate: null,
             endDate: null,
+            importMessage: "", // Store message to display
+            importStatus: "info", // Status type (success, error, etc.)
+
+
         };
     },
     methods: {
@@ -204,6 +219,62 @@ export default {
                 console.error("Error fetching all items:", error);
             }
         },
+        openFileDialog() {
+            this.$refs.fileInput.click();
+        },
+        async importCSV(event) {
+            const file = event.target.files[0];
+
+            if (!file) {
+                this.importMessage = "No file selected!";
+                this.importStatus = "error"; // Set color to error
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const token = localStorage.getItem("jwt_token");
+
+            try {
+                const response = await fetch("http://localhost:8080/sales-data/upload", {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const contentType = response.headers.get("content-type");
+                    let message;
+
+                    if (contentType && contentType.includes("application/json")) {
+                        const result = await response.json();
+                        message = result.message || "CSV imported successfully!";
+                    } else {
+                        message = await response.text();
+                    }
+
+                    this.importMessage = message; // Set message
+                    this.importStatus = "success";
+                    console.log(message);
+                } else {
+                    const error = await response.text();
+                    this.importMessage = `Failed to import CSV: ${error}`;
+                    this.importStatus = "error"; 
+                    console.error("Error importing CSV:", error);
+                }
+            } catch (err) {
+                console.error("An unexpected error occurred:", err);
+                this.importMessage = "An unexpected error occurred!";
+                this.importStatus = "error"; 
+            }
+        },
+
+
+
+
     },
     mounted() {
         this.getItems();
