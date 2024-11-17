@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
 
-            <ProfileTable></ProfileTable>
+            <NewslettersTable></NewslettersTable>
     </v-container>
 </template>
 

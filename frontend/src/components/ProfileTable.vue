@@ -1,34 +1,40 @@
 <template>
-  <v-container fluid>
-    <v-row justify="center">
-      <v-col cols="12" md="6">
-        <v-card class="ma-4 pa-8" elevation="2">
-          <v-card-title>User Profile</v-card-title>
-          <v-card-text>
-            <v-list dense>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title class="font-weight-bold">Username: {{ username }}</v-list-item-title>
-                  <v-list-item-subtitle>Role: {{ role }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-            <v-divider class="my-4"></v-divider>
+    <v-row justify="center" class="pa-4">
+      <v-col cols="12" md="8">
+        <h2>User Profile</h2>
+        <v-divider class="my-4"></v-divider>
+        
+        <v-row>
+          <v-col cols="12" md="4">
+            <p class="font-weight-bold">Username:</p>
+          </v-col>
+          <v-col cols="12" md="8">
+            <p>{{ username }}</p>
+          </v-col>
+        </v-row>
 
-            <v-btn color="primary" @click="dialog = true" block>Change Password</v-btn>
+        <v-row>
+          <v-col cols="12" md="4">
+            <p class="font-weight-bold">Role:</p>
+          </v-col>
+          <v-col cols="12" md="8">
+            <p>{{ role }}</p>
+          </v-col>
+        </v-row>
 
-            <v-alert v-if="errorMessage" type="error" class="mt-4">
-              {{ errorMessage }}
-            </v-alert>
+        <v-divider class="my-4"></v-divider>
 
-            <v-alert v-if="successMessage" type="success" class="mt-4">
-              {{ successMessage }}
-            </v-alert>
-          </v-card-text>
-        </v-card>
+        <v-btn color="primary" @click="dialog = true">Change Password</v-btn>
+
+        <v-alert v-if="errorMessage" type="error" class="mt-4">
+          {{ errorMessage }}
+        </v-alert>
+
+        <v-alert v-if="successMessage" type="success" class="mt-4">
+          {{ successMessage }}
+        </v-alert>
       </v-col>
     </v-row>
-
     <!-- Password Change Modal -->
     <v-dialog v-model="dialog" max-width="400px">
       <v-card>
@@ -58,7 +64,6 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-  </v-container>
 </template>
 
 <script>

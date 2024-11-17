@@ -7,6 +7,7 @@ import Admin from '@/pages/Admin.vue';
 import Analytics from '@/pages/Analytics.vue';
 import Marketing from '@/pages/Marketing.vue';
 import Profile from '@/pages/Profile.vue';
+import Newsletters from '@/pages/Newsletters.vue';
 
 const routes = [
   {
@@ -23,6 +24,8 @@ const routes = [
       { path: 'analytics', name: 'Analytics', component: Analytics },
       { path: 'marketing', name: 'Marketing', component: Marketing },
       { path: 'profile', name: 'Profile', component: Profile },
+      { path: 'newsletters', name: 'Newsletters', component: Newsletters },
+
     ],
   },
 ];
