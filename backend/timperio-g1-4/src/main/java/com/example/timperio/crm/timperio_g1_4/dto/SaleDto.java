@@ -2,6 +2,7 @@ package com.example.timperio.crm.timperio_g1_4.dto;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 
 import com.example.timperio.crm.timperio_g1_4.entity.Customer;
 import com.example.timperio.crm.timperio_g1_4.entity.Product;
@@ -20,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SaleDto {
     private Long saleId;
-    private Date saleDate;
+    private LocalDate saleDate;
     private Long zipCode;
     private SaleType saleType;
     private String digital;

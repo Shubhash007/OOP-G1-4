@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -61,13 +59,7 @@ public class SalesDataUploadServiceImpl {
                 // Map the CSV data to entity fields
 
                 // parse the saleDate for use in subsequent operations
-                Date saleDate;
-                try {
-                    LocalDate localDate = LocalDate.parse(record.get("Sale Date"), formatter);
-                    saleDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                } catch (Exception e) {
-                    throw new DateTimeParseException("Invalid date format", record.get("Sale Date"), 0);
-                }
+                LocalDate saleDate = LocalDate.parse(record.get("Sale Date"), formatter);
 
                 // parse zipcode for use in subsequent operations
                 String zipCodeStr = record.get("ZipCode");
@@ -81,7 +73,7 @@ public class SalesDataUploadServiceImpl {
                 if (customer != null) {
                     // update the last purchase date
                     customer
-                            .setLastPurchaseDate(saleDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+                            .setLastPurchaseDate(saleDate);
 
                     // update the zipcodes
                     if (zipCodeStr != null && !zipCodeStr.trim().isEmpty()) {
@@ -93,12 +85,22 @@ public class SalesDataUploadServiceImpl {
                         }
                     }
 
+                    // update the other values - returning_customer, purchase_count,
+                    // total_expenditure
+                    if (customer.getLastPurchaseDate().isBefore(LocalDate.now().minusDays(30))) {
+                        customer.setReturningCustomer(true);
+                    }
+                    customer.setPurchaseCount(customer.getPurchaseCount() + 1);
+                    customer.setTotalExpenditure(customer.getTotalExpenditure()
+                            .add(new BigDecimal(record.get("Product Price"))));
+
                     customerRepository.save(customer);
                 } else {
+                    // create a new customer
                     customer = new Customer();
 
                     customer.setCustomerId(Long.valueOf(record.get("Customer ID")));
-                    customer.setLastPurchaseDate(saleDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+                    customer.setLastPurchaseDate(saleDate);
                     if (zipCodeStr != null && !zipCodeStr.trim().isEmpty()) {
                         List<Long> zipCodes = new ArrayList<>();
                         zipCodes.add(Long.valueOf(record.get("ZipCode")));
@@ -149,7 +151,7 @@ public class SalesDataUploadServiceImpl {
 
                 // Sale
                 Sale sale = new Sale();
-                sale.setSaleDate(new java.sql.Date(saleDate.getTime()));
+                sale.setSaleDate(saleDate);
                 if (zipCodeStr != null && !zipCodeStr.trim().isEmpty()) {
                     sale.setZipCode(Long.valueOf(record.get("ZipCode")));
                 }

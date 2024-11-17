@@ -2,6 +2,7 @@ package com.example.timperio.crm.timperio_g1_4.service.impl;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,12 +95,10 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
                 // Filter sales within the date range
                 saleList = saleList.stream()
                         .filter(sale -> {
-                            Date saleDate = sale.getSaleDate();
+                            LocalDate saleDate = sale.getSaleDate();
                             // Keep only sales within the date range
-                            boolean isAfterStart = startDate == null || !saleDate.before(startDate); // Use `before` for
-                                                                                                     // clarity
-                            boolean isBeforeEnd = endDate == null || !saleDate.after(endDate); // Use `after` for
-                                                                                               // clarity
+                            boolean isAfterStart = startDate == null || !saleDate.isBefore(startDate.toLocalDate());
+                            boolean isBeforeEnd = endDate == null || !saleDate.isAfter(endDate.toLocalDate());
                             return isAfterStart && isBeforeEnd;
                         })
                         .collect(Collectors.toList());
