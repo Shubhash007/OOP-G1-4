@@ -77,18 +77,6 @@ export default {
             endDate: null,
         };
     },
-    computed: {
-        dateRangeText() {
-            return this.dateRange.length
-                ? `${this.dateRange[0]} - ${this.dateRange[1]}`
-                : "";
-        }, startDateText() {
-            return this.startDate ? this.formatDate(this.startDate) : "";
-        },
-        endDateText() {
-            return this.endDate ? this.formatDate(this.endDate) : "";
-        },
-    },
     methods: {
         getSaleTypeColor(saleType) {
             switch (saleType) {
@@ -105,17 +93,6 @@ export default {
                 default:
                     return "grey";
             }
-        },
-        updateStartDate(value) {
-            this.startDate = value;
-        },
-        updateEndDate(value) {
-            this.endDate = value;
-        },
-        formatDate(date) {
-            // Format the date as 'YYYY-MM-DD'
-            const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-            return new Date(date).toLocaleDateString("en-CA", options);
         },
         async fetchFilteredData() {
             const token = localStorage.getItem("jwt_token");
