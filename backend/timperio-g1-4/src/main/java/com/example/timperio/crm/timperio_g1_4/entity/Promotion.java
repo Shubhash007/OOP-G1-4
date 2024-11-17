@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.timperio.crm.timperio_g1_4.enums.PromotionType;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,7 +37,7 @@ public class Promotion {
     @Column(name = "promotion_id")
     private Long promotionId;
 
-    @Column(name = "promotion_name", nullable = false, length = 100, unique = true)
+    @Column(name = "promotion_name", nullable = false, length = 100)
     private String promotionName;
 
     @Column(name = "promotion_description", nullable = false, length = 100)
