@@ -10,4 +10,8 @@ public interface CustomerService {
     // CustomerDto createCustomer(CustomerDto customerDto);
 
     HashMap<String, List<CustomerDto>> getCustomerListByRecency();
+
+    HashMap<String, List<CustomerDto>> getCustomerListByFrequency();
+
+    HashMap<String, List<CustomerDto>> getCustomerListBySpending();
 }

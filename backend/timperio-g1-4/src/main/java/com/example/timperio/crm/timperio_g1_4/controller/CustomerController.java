@@ -38,6 +38,29 @@ public class CustomerController {
             return new ResponseEntity<>("An internal error has occured.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
+    @GetMapping("/segmentation-frequency")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getCustomerListByFrequency() {
+        try {
+            HashMap<String, List<CustomerDto>> customerList = customerService.getCustomerListByFrequency();
+            return new ResponseEntity<>(customerList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An internal error has occured.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/segmentation-spending")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getCustomerListBySpending() {
+        try {
+            HashMap<String, List<CustomerDto>> customerList = customerService.getCustomerListBySpending();
+            return new ResponseEntity<>(customerList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An internal error has occured.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
