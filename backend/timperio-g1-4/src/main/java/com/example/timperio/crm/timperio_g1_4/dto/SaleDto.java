@@ -21,6 +21,7 @@ import lombok.Setter;
 public class SaleDto {
     private Long saleId;
     private Date saleDate;
+    private Long zipCode;
     private SaleType saleType;
     private String digital;
     private ShippingMethod shippingMethod;
