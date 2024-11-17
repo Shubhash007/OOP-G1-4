@@ -1,7 +1,8 @@
 package com.example.timperio.crm.timperio_g1_4.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
-import com.example.timperio.crm.timperio_g1_4.entity.Sale;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,11 @@ public class CustomerDto {
 
     private Long customerId;
     private List<Long> zipCode;
-    private List<Sale> sales;
+    private LocalDate lastPurchaseDate;
+    private Boolean acceptNewsletter;
+    private String email;
+    private Boolean returningCustomer;
+    private Integer purchaseCount;
+    private BigDecimal totalExpenditure;
 
 }

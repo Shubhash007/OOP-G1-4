@@ -57,7 +57,7 @@ public class Sale {
     @Column(name = "original_price", nullable = false, precision = 8, scale = 2)
     private BigDecimal originalPrice;
 
-    @Column(name = "discounted_price", precision = 8, scale = 2)
+    @Column(name = "discounted_price")
     private BigDecimal discountedPrice;
 
     @ManyToOne

@@ -1,5 +1,6 @@
 package com.example.timperio.crm.timperio_g1_4.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -52,6 +53,15 @@ public class Customer {
 
     @Column(name = "email", length = 100)
     private String email;
+
+    @Column(name = "returning_customer", nullable = false)
+    private Boolean returningCustomer = false;
+
+    @Column(name = "purchase_count")
+    private Integer purchaseCount = 0;
+
+    @Column(name = "total_expenditure", precision = 8, scale = 2)
+    private BigDecimal totalExpenditure = new BigDecimal(0);
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonIgnore

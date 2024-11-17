@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -93,8 +91,18 @@ public class SalesDataUploadServiceImpl {
                         }
                     }
 
+                    // update the other values - returning_customer, purchase_count,
+                    // total_expenditure
+                    if (customer.getLastPurchaseDate().isBefore(LocalDate.now().minusDays(30))) {
+                        customer.setReturningCustomer(true);
+                    }
+                    customer.setPurchaseCount(customer.getPurchaseCount() + 1);
+                    customer.setTotalExpenditure(customer.getTotalExpenditure()
+                            .add(new BigDecimal(record.get("Product Price"))));
+
                     customerRepository.save(customer);
                 } else {
+                    // create a new customer
                     customer = new Customer();
 
                     customer.setCustomerId(Long.valueOf(record.get("Customer ID")));
