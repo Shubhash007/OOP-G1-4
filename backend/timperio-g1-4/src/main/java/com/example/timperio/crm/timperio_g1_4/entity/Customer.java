@@ -41,8 +41,8 @@ public class Customer {
     @ElementCollection
     @CollectionTable(name = "customer_zip_codes", joinColumns = @JoinColumn(name = "customer_id"), uniqueConstraints = @UniqueConstraint(columnNames = {
             "customer_id", "zip_code" }))
-    @Column(name = "zip_code")
-    private List<Long> zipCode = new ArrayList<>(); // multiple addresses Integer array
+    @Column(name = "customer_zip_codes")
+    private List<Long> zipCodes = new ArrayList<>(); // multiple addresses Integer array
 
     @Column(name = "last_purchase_date")
     private LocalDate lastPurchaseDate;

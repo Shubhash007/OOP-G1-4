@@ -37,6 +37,9 @@ public class Sale {
     @Column(name = "sale_date")
     private Date saleDate;
 
+    @Column(name = "zip_code")
+    private Long zipCode;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "sale_type")
     private SaleType saleType;

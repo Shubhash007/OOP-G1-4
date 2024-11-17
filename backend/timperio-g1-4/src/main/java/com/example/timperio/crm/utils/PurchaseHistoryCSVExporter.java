@@ -32,7 +32,7 @@ public class PurchaseHistoryCSVExporter {
                 csvPrinter.printRecord(
                         sale.getSaleId(),
                         customer != null ? customer.getCustomerId() : "N/A",
-                        customer != null ? customer.getZipCode() : "N/A",
+                        customer != null ? customer.getZipCodes() : "N/A",
                         customer != null ? customer.getLastPurchaseDate() : "N/A",
                         customer != null ? customer.getAcceptNewsletter() : "N/A",
                         customer != null ? customer.getEmail() : "N/A",
@@ -40,7 +40,7 @@ public class PurchaseHistoryCSVExporter {
                         sale.getSaleType(),
                         sale.getShippingMethod(),
                         sale.getDigital(),
-                        product != null ? product.getId() : "N/A",
+                        product != null ? product.getProductId() : "N/A",
                         product != null ? product.getProductName() : "N/A",
                         product != null ? product.getProductDescription() : "N/A",
                         product != null ? product.getVariant() : "N/A",

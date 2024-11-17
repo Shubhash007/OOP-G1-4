@@ -9,6 +9,7 @@ public class SaleMapper {
         return new SaleDto(
                 sale.getSaleId(),
                 sale.getSaleDate(),
+                sale.getZipCode(),
                 sale.getSaleType(),
                 sale.getDigital(),
                 sale.getShippingMethod(),
@@ -24,6 +25,7 @@ public class SaleMapper {
         return new Sale(
                 saleDto.getSaleId(),
                 saleDto.getSaleDate(),
+                saleDto.getZipCode(),
                 saleDto.getSaleType(),
                 saleDto.getShippingMethod(),
                 saleDto.getDigital(),
