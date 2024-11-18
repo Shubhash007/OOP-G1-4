@@ -1,10 +1,8 @@
 package com.example.timperio.crm.timperio_g1_4.service.impl;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,9 +69,9 @@ public class CustomerServiceImpl implements CustomerService {
             }
         }
 
-        customerList.put("activeCustomers", activeCustomers);
-        customerList.put("dormantCustomers", dormantCustomers);
-        customerList.put("returningCustomers", returningCustomers);
+        customerList.put("Active Customer", activeCustomers);
+        customerList.put("Dormant Customers", dormantCustomers);
+        customerList.put("Returning Customers", returningCustomers);
         return customerList;
     }
 

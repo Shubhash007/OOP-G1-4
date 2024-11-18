@@ -80,7 +80,7 @@ export default {
       minPrice: null,
       maxPrice: null,
       dateRange: null,
-      filters: ["DIRECT_B2B", "DIRECT_B2C", "CONSIGNMENT", "MARKETING", "WHOLESALER"],
+      filters: ["DIRECT_B2B", "DIRECT_B2C", "CONSIGNMENT", "MARKETING", "WHOLESALER", "NOT_APPLICABLE"],
     };
   },
   async mounted() {
@@ -132,10 +132,8 @@ export default {
           const filteredData = await response.json();
 
           this.analyticsData = this.transformDataForCharts(filteredData);
-
-          console.log(this.analyticsData)
-          this.destroyCharts(); // Destroy old charts
-          this.createCharts(); // Create updated charts
+          this.destroyCharts(); 
+          this.createCharts(); 
         } else {
           console.error("Failed to fetch filtered data.");
         }

@@ -104,7 +104,7 @@ export default {
       errorMessage: '',
     };
   },
-  
+
   computed: {
     selectedUserDto() {
       if (Array.isArray(this.selected) && this.selected.length === 1) {
