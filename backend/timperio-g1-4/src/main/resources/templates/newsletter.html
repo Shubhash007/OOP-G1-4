@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Personalized Newsletter</title>
+</head>
+<body>
+    <p>Dear <span th:text="${customerName}">Customer Name</span>,</p>
+    <p>
+        We’ve curated something special for you! Based on your recent purchases and browsing history, here are
+        some exclusive offers and recommendations we think you'll love.
+    </p>
+    <h3>Top Picks for You:</h3>
+    <ul>
+        <!-- <li th:each="promotion : ${promotion}">
+            <strong th:text="${promotion.name}">Product Name</strong><br/>
+            Price: $<span th:text="${promotion.price}">Product Price</span><br/>
+            Discount: <span th:text="${promotion.discount}">Discount Details</span><br/><br/>
+        </li> -->
+    </ul>
+    <p>
+        Take advantage of these personalized offers and discover more with Timperio. Shop now and enjoy the
+        best deals tailored just for you!
+    </p>
+    <p>Warm regards,<br/>Marketing Team</p>
+</body>
+</html>

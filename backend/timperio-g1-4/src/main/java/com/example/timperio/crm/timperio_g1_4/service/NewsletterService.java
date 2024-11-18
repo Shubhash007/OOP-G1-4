@@ -22,5 +22,5 @@ public interface NewsletterService {
     List<CustomerNewsletterDto> getNewslettersForCustomer(Long customerId);
     List<CustomerNewsletterDto> getCustomersForNewsletter(Long newsletterId);
 
-    void sendNewsletter(CustomerNewsletterDto customerNewsletterDto);
+    void sendNewsletter();
 }

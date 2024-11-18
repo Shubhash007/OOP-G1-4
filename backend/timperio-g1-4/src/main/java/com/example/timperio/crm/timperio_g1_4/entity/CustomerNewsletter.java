@@ -2,6 +2,8 @@ package com.example.timperio.crm.timperio_g1_4.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,6 +41,7 @@ public class CustomerNewsletter {
     @Column(name = "send_success", nullable = false)
     private boolean sendSuccess;
 
+    @CreationTimestamp
     @Column(name = "send_date", nullable = false)
     private LocalDate sendDate;
 }

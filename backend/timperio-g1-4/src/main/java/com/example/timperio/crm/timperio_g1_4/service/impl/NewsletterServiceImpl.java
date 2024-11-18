@@ -1,11 +1,18 @@
 package com.example.timperio.crm.timperio_g1_4.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateSpec;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
 
 import com.example.timperio.crm.timperio_g1_4.dto.CustomerNewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterDto;
@@ -20,8 +27,24 @@ import com.example.timperio.crm.timperio_g1_4.repository.NewsletterRepository;
 import com.example.timperio.crm.timperio_g1_4.repository.NewsletterTemplateRepository;
 import com.example.timperio.crm.timperio_g1_4.service.NewsletterService;
 
+import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
 @Service
 public class NewsletterServiceImpl implements NewsletterService {
+
+    private static final Dotenv dotenv = Dotenv
+                                        .load();
+
+    private final JavaMailSender mailSender;
+    private final SpringTemplateEngine templateEngine;
+
+
+    public NewsletterServiceImpl(JavaMailSender mailSender, SpringTemplateEngine templateEngine) {
+        this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
+    }
 
     @Autowired
     private NewsletterRepository newsletterRepository;
@@ -45,7 +68,7 @@ public class NewsletterServiceImpl implements NewsletterService {
         newsletter.setName(newsletterDto.getName());
         newsletter.setDescription(newsletterDto.getDescription());
         newsletter.setContent(newsletterDto.getContent());
-        newsletter.setCreatedAt(newsletterDto.getCreatedAt());
+        // newsletter.setCreatedAt(newsletterDto.getCreatedAt());
         newsletter.setNewsletterTemplate(template);
 
         Newsletter savedNewsletter = newsletterRepository.save(newsletter);
@@ -78,7 +101,7 @@ public class NewsletterServiceImpl implements NewsletterService {
         template.setName(templateDto.getName());
         template.setDescription(templateDto.getDescription());
         template.setContent(templateDto.getContent());
-        template.setCreatedAt(templateDto.getCreatedAt());
+        //template.setCreatedAt(templateDto.getCreatedAt());
 
         NewsletterTemplate savedTemplate = templateRepository.save(template);
         return convertTemplateToDto(savedTemplate);
@@ -145,10 +168,52 @@ public class NewsletterServiceImpl implements NewsletterService {
     
 
     @Override
-    public void sendNewsletter(CustomerNewsletterDto customerNewsletterDto) {
+    public void sendNewsletter(){
         // Placeholder for sending logic.
+        // Customer customer = customerRepository.findById(customerNewsletterDto.getCustomerId().longValue())
+        //         .orElseThrow(() -> new NoSuchElementException("Customer not found"));
+        NewsletterTemplate newsletterTemplate = templateRepository.findById((long)3)
+                .orElseThrow(() -> new NoSuchElementException("Newsletter template not found"));
         System.out.println("Sending newsletter to customer...");
-        // Implement actual sending logic here.
+
+
+        Context context = new Context();
+        context.setVariable("customerName", "Bob");
+        // context.setVariable("products", products);
+
+        String templateContent = newsletterTemplate.getContent();
+        templateContent = templateContent.replace("\\${", "${");
+        TemplateSpec templateSpec = new TemplateSpec(templateContent, TemplateMode.HTML);
+
+        String htmlContent = templateEngine.process(templateSpec, context);
+
+
+
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            // helper.setTo(customer.getEmail());
+            // helper.setSubject(newsletter.getName());
+            // helper.setText(newsletter.getContent(), true);
+
+            // try {
+            //     mailSender.send(mimeMessage);
+            // } catch (MessagingException e) {
+            //     e.printStackTrace();
+            // }
+            helper.setFrom(dotenv.get("MAIL_USERNAME"), "Shubhash");
+            helper.setTo("shubhashees.2020@smu.edu.sg");
+
+            helper.setSubject("Test");
+            helper.setText(htmlContent, true);
+
+            mailSender.send(mimeMessage);
+            // Implement actual sending logic here
+            
+        } catch ( MessagingException | UnsupportedEncodingException e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
     }
 
     // ------------------ Helper Converters ------------------

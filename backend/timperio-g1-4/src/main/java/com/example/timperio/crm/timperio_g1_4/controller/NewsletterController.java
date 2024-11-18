@@ -51,14 +51,20 @@ public class NewsletterController {
         return ResponseEntity.ok(newsletterService.getAllNewsletters());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:\\d+}")
     public ResponseEntity<NewsletterDto> getNewsletterById(@PathVariable Long id) {
         return ResponseEntity.ok(newsletterService.getNewsletterById(id));
     }
 
-    @PostMapping("/send")
-    public ResponseEntity<Void> sendNewsletter(@RequestBody CustomerNewsletterDto customerNewsletterDto) {
-        newsletterService.sendNewsletter(customerNewsletterDto);
-        return ResponseEntity.ok().build();
+    // @PostMapping("/send")
+    // public ResponseEntity<Void> sendNewsletter(@RequestBody CustomerNewsletterDto customerNewsletterDto) {
+    //     newsletterService.sendNewsletter(customerNewsletterDto);
+    //     return ResponseEntity.ok().build();
+    // }
+
+    @GetMapping("/send")
+    public ResponseEntity<String> sendNewsletter() {
+        newsletterService.sendNewsletter();
+        return ResponseEntity.ok("Newsletter sent successfully");
     }
 }
