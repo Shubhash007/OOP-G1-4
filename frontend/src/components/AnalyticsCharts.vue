@@ -27,7 +27,7 @@
       <v-card>
         <v-card-title>Total Number of Sales by Date</v-card-title>
         <v-card-text>
-          <canvas ref="chartCanvas1"></canvas>
+          <canvas ref="chartCanvas1" class="chart-canvas"></canvas>
         </v-card-text>
       </v-card>
     </v-col>
@@ -35,7 +35,7 @@
       <v-card>
         <v-card-title>Total Amount of Sales by Date</v-card-title>
         <v-card-text>
-          <canvas ref="chartCanvas2"></canvas>
+          <canvas ref="chartCanvas2" class="chart-canvas"></canvas>
         </v-card-text>
       </v-card>
     </v-col>
@@ -45,7 +45,7 @@
       <v-card>
         <v-card-title>Average Order Value (AOV) by Date</v-card-title>
         <v-card-text>
-          <canvas ref="chartCanvas3"></canvas>
+          <canvas ref="chartCanvas3" class="chart-canvas"></canvas>
         </v-card-text>
       </v-card>
     </v-col>
@@ -53,7 +53,7 @@
       <v-card>
         <v-card-title>Top 8 Product Count Distribution</v-card-title>
         <v-card-text>
-          <canvas ref="chartCanvas4"></canvas>
+          <canvas ref="chartCanvas4" class="chart-canvas"></canvas>
         </v-card-text>
       </v-card>
     </v-col>
@@ -245,7 +245,6 @@ export default {
       const ctx = this.$refs[refName].getContext("2d");
       const canvas = this.$refs[refName];
   canvas.style.height = "250px"; // Fixed height (adjust as needed)
-  canvas.style.width = "100%"; // Maintain width responsiveness
       return new Chart(ctx, {
         type: "line",
         data: {
@@ -263,6 +262,8 @@ export default {
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
+
           plugins: {
             legend: {
               display: false,
@@ -294,7 +295,6 @@ export default {
     createPieChart(refName, labels, data, label) {
       const canvas = this.$refs[refName];
   canvas.style.height = "250px"; // Fixed height (adjust as needed)
-  canvas.style.width = "100%"; // Maintain width responsiveness
       const ctx = canvas.getContext("2d");
 
       return new Chart(ctx, {
@@ -393,4 +393,13 @@ export default {
     },
   },
 };
+
 </script>
+
+
+<style scoped>
+.chart-canvas {
+  height: 300px; /* Fixed height */
+  width: 100%; /* Maintain responsive width */
+}
+</style>
