@@ -14,6 +14,8 @@ public interface CustomerService {
 
     Customer createCustomer(CustomerDto customerDto);
 
+    Customer updateCustomer(CustomerDto customerDto) throws Exception;
+
     HashMap<String, List<CustomerDto>> getCustomerListByRecency();
 
     HashMap<String, List<CustomerDto>> getCustomerListByFrequency();

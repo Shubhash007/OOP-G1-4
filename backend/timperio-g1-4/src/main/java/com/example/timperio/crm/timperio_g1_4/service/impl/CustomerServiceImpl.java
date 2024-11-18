@@ -39,6 +39,18 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.save(customer);
     }
 
+    public Customer updateCustomer(CustomerDto customerDto) throws Exception {
+        if (customerDto.getCustomerId() == null) {
+            throw new Exception("Please include the id of the customer to update.");
+        }
+        Customer customer = customerRepository.findById(customerDto.getCustomerId())
+                .orElseThrow(() -> new Exception("Unable to find customer with id " + customerDto.getCustomerId()));
+        customer.setZipCodes(customerDto.getZipCode());
+        customer.setAcceptNewsletter(customerDto.getAcceptNewsletter());
+        customer.setEmail(customerDto.getEmail());
+        return customerRepository.save(customer);
+    }
+
     public HashMap<String, List<CustomerDto>> getCustomerListByRecency() {
         HashMap<String, List<CustomerDto>> customerList = new HashMap<>();
         // create the 3 categories as such

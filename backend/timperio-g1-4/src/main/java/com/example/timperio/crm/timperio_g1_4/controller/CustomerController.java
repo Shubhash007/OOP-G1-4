@@ -50,6 +50,21 @@ public class CustomerController {
         }
     }
 
+    // update a customer
+    // the only fields that should be updatable are the zip code, email, and
+    // newsletter subscription
+    @PostMapping("/update")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> updateCustomer(@RequestBody CustomerDto customerDto) {
+        try {
+            Customer updatedCustomer = customerService.updateCustomer(customerDto);
+            return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/segmentation-recency")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCustomerListByRecency() {
