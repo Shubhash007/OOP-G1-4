@@ -4,10 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.example.timperio.crm.timperio_g1_4.dto.CustomerDto;
+import com.example.timperio.crm.timperio_g1_4.entity.Customer;
 
 public interface CustomerService {
 
     // CustomerDto createCustomer(CustomerDto customerDto);
+
+    List<Customer> getAllCustomers();
+
+    Customer createCustomer(CustomerDto customerDto);
 
     HashMap<String, List<CustomerDto>> getCustomerListByRecency();
 

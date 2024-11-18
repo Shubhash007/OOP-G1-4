@@ -23,18 +23,21 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
 
-    // @Override
-    // @Transactional
-    // public CustomerDto createCustomer(CustomerDto customerDto) {
-    // Customer customer = CustomerMapper.mapToCustomer(customerDto);
-    // // if (customerRepository.existsById(customer.getCustomerId())){
-    // // return null;
-    // // }
-    // Customer savedCustomer = customerRepository.save(customer);
-    // return CustomerMapper.maptoCustomerDto(savedCustomer);
-    // }
+    public Customer createCustomer(CustomerDto customerDto) {
+        Customer customer = new Customer();
+        customer.setZipCodes(customerDto.getZipCode());
+        customer.setAcceptNewsletter(customerDto.getAcceptNewsletter());
+        customer.setEmail(customerDto.getEmail());
+        customer.setLastPurchaseDate(customerDto.getLastPurchaseDate());
+        customer.setReturningCustomer(customerDto.getReturningCustomer());
+        customer.setPurchaseCount(customerDto.getPurchaseCount());
+        customer.setTotalExpenditure(customerDto.getTotalExpenditure());
+        return customerRepository.save(customer);
+    }
 
     public HashMap<String, List<CustomerDto>> getCustomerListByRecency() {
         HashMap<String, List<CustomerDto>> customerList = new HashMap<>();
