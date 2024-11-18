@@ -45,29 +45,44 @@
                 prepend-inner-icon="mdi-currency-usd"></v-text-field>
         </v-col>
     </v-row>
-
     <v-data-table :items="items" item-value="saleId" items-per-page="10">
+        <template v-slot:item.saleId="{ item }">
+            {{ item.saleId || "N/A" }}
+        </template>
+        <template v-slot:item.saleDate="{ item }">
+            {{ item.saleDate ? formatDate(item.saleDate) : "N/A" }}
+        </template>
         <template v-slot:item.customer="{ item }">
             {{ item.customer.customerId }}
         </template>
-
+        <template v-slot:item.customerZipCodes="{ item }">
+            {{ item.customer?.zipCodes ? item.customer.zipCodes.join(", ") : "N/A" }}
+        </template>
         <template v-slot:item.product="{ item }">
             {{ item.product.productName }}
         </template>
-
         <template v-slot:item.productPrice="{ item }">
-            ${{ item.product.price.toFixed(2) }}
+            {{ item.product?.price ? formatCurrency(item.product.price) : "N/A" }}
         </template>
-
+        <template v-slot:item.originalPrice="{ item }">
+            {{ item.originalPrice ? formatCurrency(item.originalPrice) : "N/A" }}
+        </template>
         <template v-slot:item.discountedPrice="{ item }">
-            <span v-if="item.discountedPrice">${{ item.discountedPrice.toFixed(2) }}</span>
+            <span v-if="item.discountedPrice !== null && item.discountedPrice !== undefined">
+                {{ formatCurrency(item.discountedPrice) }}
+            </span>
             <span v-else>N/A</span>
         </template>
-
         <template v-slot:item.saleType="{ item }">
             <v-chip :color="getSaleTypeColor(item.saleType)" dark>
-                {{ item.saleType }}
+                {{ item.saleType || "Unknown" }}
             </v-chip>
+        </template>
+        <template v-slot:item.shippingMethod="{ item }">
+            {{ item.shippingMethod || "N/A" }}
+        </template>
+        <template v-slot:item.quantity="{ item }">
+            {{ item.quantity || 0 }}
         </template>
     </v-data-table>
 </template>
@@ -83,7 +98,7 @@ export default {
             dateRange: null,
             menu: false,
             items: [],
-            filters: ["DIRECT_B2B", "DIRECT_B2C", "CONSIGNMENT", "MARKETING", "WHOLESALER"],
+            filters: ["DIRECT_B2B", "DIRECT_B2C", "CONSIGNMENT", "MARKETING", "WHOLESALER", "NOT_APPLICABLE"],
             startDate: null,
             endDate: null,
             importMessage: "", // Store message to display
@@ -262,18 +277,26 @@ export default {
                 } else {
                     const error = await response.text();
                     this.importMessage = `Failed to import CSV: ${error}`;
-                    this.importStatus = "error"; 
+                    this.importStatus = "error";
                     console.error("Error importing CSV:", error);
                 }
             } catch (err) {
                 console.error("An unexpected error occurred:", err);
                 this.importMessage = "An unexpected error occurred!";
-                this.importStatus = "error"; 
+                this.importStatus = "error";
             }
         },
-
-
-
+        formatCurrency(value) {
+            return new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+            }).format(value);
+        },
+        formatDate(date) {
+            if (!date) return "N/A";
+            const [year, month, day] = date.split("-");
+            return `${day}-${month}-${year}`;
+        },
 
     },
     mounted() {

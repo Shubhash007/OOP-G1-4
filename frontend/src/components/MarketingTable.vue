@@ -1,99 +1,185 @@
 <template>
-    <v-data-table
-      v-model="selected"
-      :items="items"
-      item-value="name"
-      show-select
-      items-per-page="5"
-    >
-      <template v-slot:item.role="{ item }">
-        <v-chip :color="getRoleColor(item.role)" dark>{{ item.role }}</v-chip>
+    <v-tabs v-model="activeTab" background-color="primary" dark>
+      <v-tab>Recency</v-tab>
+      <v-tab>Frequency</v-tab>
+      <v-tab>Monetary</v-tab>
+    </v-tabs>
+
+    <v-tabs-items v-model="activeTab">
+      <v-tab-item>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <v-select v-model="selectedOption" :items="getOptionsForTab" label="Select Category"
+                variant="outlined"></v-select>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-tab-item>
+    </v-tabs-items>
+
+    <v-data-table :items="filteredItems" :headers="headers" items-per-page="10">
+      <template v-slot:body="{ items }">
+        <tr v-for="item in items" :key="item.customerId">
+          <td>{{ item.customerId }}</td>
+
+          <td>
+            <div style="display: flex; align-items: center;">
+              <span>
+                {{ item.zipCode.length > 15 ? item.zipCode.substring(0, 15) + "..." : item.zipCode }}
+              </span>
+              <v-tooltip v-if="item.zipCode.length > 15" bottom text="Full Zip Code">
+                <template v-slot:activator="{ props }">
+                  <v-btn v-bind="props" icon small
+                    style="box-shadow: none; background: none; border: none; margin-left: 8px;">
+                    <v-icon small color="primary">mdi-information</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ item.zipCode }}</span>
+              </v-tooltip>
+            </div>
+          </td>
+
+          <td>{{ formatDate(item.lastPurchaseDate) }}</td>
+          <td>
+            <v-chip :color="item.acceptNewsletter ? 'green' : 'red'" dark>
+              {{ item.acceptNewsletter }}
+            </v-chip>
+          </td>
+          <td>{{ item.email }}</td>
+          <td>
+            <v-chip :color="item.returningCustomer ? 'blue' : 'grey'" dark>
+              {{ item.returningCustomer }}
+            </v-chip>
+          </td>
+          <td>{{ item.purchaseCount }}</td>
+          <td>{{ formatCurrency(item.totalExpenditure) }}</td>
+        </tr>
       </template>
     </v-data-table>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        selected: [],
-        items: [
-          {
-            name: "John Doe",
-            email: "john@example.com",
-            location: "New York",
-            role: "Admin",
-          },
-          {
-            name: "Jane Smith",
-            email: "jane@example.com",
-            location: "London",
-            role: "User",
-          },
-          {
-            name: "Michael Green",
-            email: "michael@example.com",
-            location: "Sydney",
-            role: "Moderator",
-          },
-          {
-            name: "Emily Johnson",
-            email: "emily@example.com",
-            location: "Toronto",
-            role: "Admin",
-          },
-          {
-            name: "David Brown",
-            email: "david@example.com",
-            location: "San Francisco",
-            role: "User",
-          },
-          {
-            name: "Lucy White",
-            email: "lucy@example.com",
-            location: "Berlin",
-            role: "User",
-          },
-          {
-            name: "Sophia Black",
-            email: "sophia@example.com",
-            location: "Paris",
-            role: "Moderator",
-          },
-          {
-            name: "James Blue",
-            email: "james@example.com",
-            location: "Tokyo",
-            role: "User",
-          },
-          {
-            name: "Lily Green",
-            email: "lily@example.com",
-            location: "Rome",
-            role: "User",
-          },
-          {
-            name: "Daniel Gray",
-            email: "daniel@example.com",
-            location: "Moscow",
-            role: "Admin",
-          },
-        ],
-      };
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      activeTab: 0,
+      selectedOption: null, // Unified selection for all tabs
+      selected: null,
+      recencyOptions: ["Active Customers", "Dormant Customers", "Returning Customers"],
+      frequencyOptions: ["Frequent Shoppers", "Occasional Shoppers", "One-Time Buyers"],
+      monetaryOptions: ["High-Value Customers", "Mid-Tier Customers", "Low-Spend Customers"],
+
+      allData: {}, // API response data
+      filteredItems: [], // Data displayed in the table
+
+    };
+  },
+  computed: {
+    getOptionsForTab() {
+      switch (this.activeTab) {
+        case 0:
+          return this.recencyOptions;
+        case 1:
+          return this.frequencyOptions;
+        case 2:
+          return this.monetaryOptions;
+        default:
+          return [];
+      }
     },
-    methods: {
-      getRoleColor(role) {
-        switch (role) {
-          case "Admin":
-            return "red";
-          case "Moderator":
-            return "blue";
-          case "User":
-          default:
-            return "green";
+  },
+  watch: {
+    activeTab(newTab) {
+      const segmentationType = ["recency", "frequency", "spending"][newTab];
+      this.fetchCustomerData(segmentationType).then(() => {
+        // Automatically select the first option after data is fetched
+        const firstOption = this.getOptionsForTab[0];
+        if (firstOption) {
+          this.selectedOption = firstOption;
+          this.filteredItems = this.processCustomerData(this.allData[firstOption] || []);
         }
-      },
+      });
     },
-  };
-  </script>
-  
+    selectedOption(newValue) {
+      if (newValue) {
+        console.log("Selected option:", newValue);
+        console.log("Data for selected option:", this.allData[newValue]);
+        this.filteredItems = this.processCustomerData(this.allData[newValue] || []);
+      }
+    },
+  },
+  created() {
+    // Initialize data for the first tab
+    const initialTab = "recency";
+    this.fetchCustomerData(initialTab).then(() => {
+      const firstOption = this.recencyOptions[0];
+      if (firstOption) {
+        this.selectedOption = firstOption;
+        this.filteredItems = this.processCustomerData(this.allData[firstOption] || []);
+      }
+    });
+  },
+  methods: {
+    async fetchCustomerData(segmentationType) {
+      const endpointMap = {
+        recency: "segmentation-recency",
+        frequency: "segmentation-frequency",
+        spending: "segmentation-spending",
+      };
+      const endpoint = endpointMap[segmentationType];
+
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        console.error("JWT token not found.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:8080/customer/${endpoint}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("API response data:", data);
+          this.allData = data;
+        } else {
+          console.error("Error fetching data:", await response.text());
+        }
+      } catch (error) {
+        console.error("Error during API call:", error);
+      }
+    },
+    processCustomerData(customers) {
+      return customers.map((customer) => ({
+        customerId: customer.customerId,
+        zipCode: customer.zipCode.join(", "),
+        lastPurchaseDate: customer.lastPurchaseDate,
+        acceptNewsletter: customer.acceptNewsletter ? "Yes" : "No",
+        email: customer.email || "N/A",
+        returningCustomer: customer.returningCustomer ? "Yes" : "No",
+        purchaseCount: customer.purchaseCount,
+        totalExpenditure: customer.totalExpenditure.toFixed(2),
+      }));
+    },
+    formatCurrency(value) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(value);
+    },
+    formatDate(date) {
+      if (!date) return "N/A";
+      const [year, month, day] = date.split("-");
+      return `${day}-${month}-${year}`;
+    },
+  },
+};
+
+
+</script>
