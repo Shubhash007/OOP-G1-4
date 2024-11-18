@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.timperio.crm.timperio_g1_4.dto.CustomerDto;
@@ -67,8 +69,18 @@ public class CustomerController {
     }
 
     // delete a customer by id
-    // @PostMapping("/delete")
-    // @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/delete")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> deleteCustomer(@RequestParam Long customerId) {
+        try {
+            customerService.deleteCustomer(customerId);
+            return new ResponseEntity<>("Customer with id " + customerId + " has been deleted.",
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An internal error has occured.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/segmentation-recency")
     @PreAuthorize("isAuthenticated()")

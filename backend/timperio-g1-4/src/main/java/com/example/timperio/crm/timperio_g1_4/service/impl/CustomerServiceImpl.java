@@ -51,6 +51,13 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.save(customer);
     }
 
+    public Customer deleteCustomer(Long customerId) throws Exception {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new Exception("Unable to find customer with id " + customerId));
+        customerRepository.delete(customer);
+        return customer;
+    }
+
     public HashMap<String, List<CustomerDto>> getCustomerListByRecency() {
         HashMap<String, List<CustomerDto>> customerList = new HashMap<>();
         // create the 3 categories as such
