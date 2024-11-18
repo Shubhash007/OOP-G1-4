@@ -3,12 +3,13 @@
     <v-app-bar app>
       <v-row class="align-center">
         <v-col cols="auto">
-          <v-img src="@/assets/logo.png" alt="Logo" max-width="80"></v-img>
         </v-col>
 
         <v-col cols="auto">
           <v-btn icon="mdi-menu" variant="text" @click.stop="drawer = !drawer"></v-btn>
         </v-col>
+        <v-img src="@/assets/logo.png" alt="Logo" max-width="80"></v-img>
+
       </v-row>
     </v-app-bar>
 

@@ -21,6 +21,7 @@
       <v-btn color="primary" @click="fetchFilteredData">Search</v-btn>
     </v-col>
   </v-row>
+
   <v-row>
     <v-col cols="6">
       <v-card>
@@ -56,7 +57,6 @@
         </v-card-text>
       </v-card>
     </v-col>
-
   </v-row>
 </template>
 
@@ -80,7 +80,7 @@ export default {
       minPrice: null,
       maxPrice: null,
       dateRange: null,
-      filters: ["DIRECT_B2B", "DIRECT_B2C", "CONSIGNMENT", "MARKETING", "WHOLESALER", "NOT_APPLICABLE"],
+      filters: ["DIRECT_B2B", "DIRECT_B2C", "CONSIGNMENT", "MARKETING", "WHOLESALER"],
     };
   },
   async mounted() {
@@ -132,8 +132,10 @@ export default {
           const filteredData = await response.json();
 
           this.analyticsData = this.transformDataForCharts(filteredData);
-          this.destroyCharts(); 
-          this.createCharts(); 
+
+          console.log(this.analyticsData)
+          this.destroyCharts(); // Destroy old charts
+          this.createCharts(); // Create updated charts
         } else {
           console.error("Failed to fetch filtered data.");
         }
@@ -241,7 +243,9 @@ export default {
 
     createChart(refName, labels, data, label, borderColor) {
       const ctx = this.$refs[refName].getContext("2d");
-
+      const canvas = this.$refs[refName];
+  canvas.style.height = "250px"; // Fixed height (adjust as needed)
+  canvas.style.width = "100%"; // Maintain width responsiveness
       return new Chart(ctx, {
         type: "line",
         data: {
@@ -289,7 +293,8 @@ export default {
 
     createPieChart(refName, labels, data, label) {
       const canvas = this.$refs[refName];
-      canvas.style.height = "214px"; // Set the height dynamically
+  canvas.style.height = "250px"; // Fixed height (adjust as needed)
+  canvas.style.width = "100%"; // Maintain width responsiveness
       const ctx = canvas.getContext("2d");
 
       return new Chart(ctx, {
