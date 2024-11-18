@@ -23,18 +23,40 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
 
-    // @Override
-    // @Transactional
-    // public CustomerDto createCustomer(CustomerDto customerDto) {
-    // Customer customer = CustomerMapper.mapToCustomer(customerDto);
-    // // if (customerRepository.existsById(customer.getCustomerId())){
-    // // return null;
-    // // }
-    // Customer savedCustomer = customerRepository.save(customer);
-    // return CustomerMapper.maptoCustomerDto(savedCustomer);
-    // }
+    public Customer createCustomer(CustomerDto customerDto) {
+        Customer customer = new Customer();
+        customer.setZipCodes(customerDto.getZipCode());
+        customer.setAcceptNewsletter(customerDto.getAcceptNewsletter());
+        customer.setEmail(customerDto.getEmail());
+        customer.setLastPurchaseDate(customerDto.getLastPurchaseDate());
+        customer.setReturningCustomer(customerDto.getReturningCustomer());
+        customer.setPurchaseCount(customerDto.getPurchaseCount());
+        customer.setTotalExpenditure(customerDto.getTotalExpenditure());
+        return customerRepository.save(customer);
+    }
+
+    public Customer updateCustomer(CustomerDto customerDto) throws Exception {
+        if (customerDto.getCustomerId() == null) {
+            throw new Exception("Please include the id of the customer to update.");
+        }
+        Customer customer = customerRepository.findById(customerDto.getCustomerId())
+                .orElseThrow(() -> new Exception("Unable to find customer with id " + customerDto.getCustomerId()));
+        customer.setZipCodes(customerDto.getZipCode());
+        customer.setAcceptNewsletter(customerDto.getAcceptNewsletter());
+        customer.setEmail(customerDto.getEmail());
+        return customerRepository.save(customer);
+    }
+
+    public Customer deleteCustomer(Long customerId) throws Exception {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new Exception("Unable to find customer with id " + customerId));
+        customerRepository.delete(customer);
+        return customer;
+    }
 
     public HashMap<String, List<CustomerDto>> getCustomerListByRecency() {
         HashMap<String, List<CustomerDto>> customerList = new HashMap<>();
