@@ -1,169 +1,167 @@
 <template>
-    <!-- Tabs for switching between sections -->
-    <v-tabs v-model="activeTab">
-      <v-tab>Templates</v-tab>
-      <v-tab>Newsletters</v-tab>
-      <v-tab>Logs</v-tab>
-    </v-tabs>
+  <!-- Tabs for switching between sections -->
+  <v-tabs v-model="activeTab">
+    <v-tab>Templates</v-tab>
+    <v-tab>Newsletters</v-tab>
+    <v-tab>Logs</v-tab>
+  </v-tabs>
 
-    <v-tabs-items v-model="activeTab">
-      <!-- Templates Tab -->
-      <v-tab-item v-if="activeTab === 0">
-        <v-row class="pa-4 align-center">
-          <v-col cols="12" md="5">
-            <v-text-field
-              variant="outlined"
-              v-model="searchQuery"
-              label="Search template name"
-              prepend-inner-icon="mdi-magnify"
-              hide-details
-              full-width
-            ></v-text-field>
-          </v-col>
-          <v-col cols="4" md="2">
-            <v-btn color="secondary" class="ml-0" block @click="openEditDialog('Template')" :disabled="!selectedTemplate">
-              <v-icon class="mr-2" left>mdi-update</v-icon>
-              Update
-            </v-btn>
-          </v-col>
-          <v-col cols="4" md="2">
-            <v-btn color="disabled" class="ml-0" block @click="deleteTemplate" :disabled="!selectedTemplate">
-              <v-icon class="mr-2" left>mdi-delete</v-icon>
-              Delete
-            </v-btn>
-          </v-col>
-          <v-col cols="4" md="3">
-            <v-btn color="primary" class="ml-0" block @click="openCreateDialog('Template')">
-              <v-icon class="mr-2">mdi-plus-box</v-icon>
-              Create Template
-            </v-btn>
-          </v-col>
-        </v-row>
+  <v-tabs-items v-model="activeTab">
+    <!-- Templates Tab -->
+    <v-tab-item v-if="activeTab === 0">
+      <v-row class="pa-4 align-center">
+        <v-col cols="12" md="5">
+          <v-text-field variant="outlined" v-model="searchQuery" label="Search template name"
+            prepend-inner-icon="mdi-magnify" hide-details full-width></v-text-field>
+        </v-col>
+        <v-col cols="4" md="2">
+          <v-btn color="secondary" class="ml-0" block @click="openEditDialog('Template')" :disabled="!selectedTemplate">
+            <v-icon class="mr-2" left>mdi-update</v-icon>
+            Update
+          </v-btn>
+        </v-col>
+        <v-col cols="4" md="2">
+          <v-btn color="disabled" class="ml-0" block @click="deleteTemplate" :disabled="!selectedTemplate">
+            <v-icon class="mr-2" left>mdi-delete</v-icon>
+            Delete
+          </v-btn>
+        </v-col>
+        <v-col cols="4" md="3">
+          <v-btn color="primary" class="ml-0" block @click="openCreateDialog('Template')">
+            <v-icon class="mr-2">mdi-plus-box</v-icon>
+            Create Template
+          </v-btn>
+        </v-col>
+      </v-row>
 
-        <v-data-table
-          :items="filteredTemplates"
-          :headers="templateHeaders"
-          item-value="id"
-          show-select
-          items-per-page="8"
-          select-strategy="single"
-          v-model="selectedTemplate"
-        ></v-data-table>
-      </v-tab-item>
+      <v-data-table :items="filteredTemplates" :headers="templateHeaders" item-value="id" show-select items-per-page="8"
+        select-strategy="single" v-model="selectedTemplate"></v-data-table>
+    </v-tab-item>
 
-      <!-- Newsletters Tab -->
-      <v-tab-item v-if="activeTab === 1">
-        <v-row class="pa-4 align-center">
-          <v-col cols="12" md="5">
-            <v-text-field
-              variant="outlined"
-              v-model="searchQuery"
-              label="Search newsletter name"
-              prepend-inner-icon="mdi-magnify"
-              hide-details
-              full-width
-            ></v-text-field>
-          </v-col>
-          <v-col cols="4" md="2">
-            <v-btn color="secondary" class="ml-0" block @click="openEditNewsletterDialog('Newsletter')" :disabled="!selectedNewsletter">
-              <v-icon class="mr-2" left>mdi-update</v-icon>
-              Update
-            </v-btn>
-          </v-col>
-          <v-col cols="4" md="2">
-            <v-btn color="disabled" class="ml-0" block @click="deleteNewsletter" :disabled="!selectedNewsletter">
-              <v-icon class="mr-2" left>mdi-delete</v-icon>
-              Delete
-            </v-btn>
-          </v-col>
-          <v-col cols="4" md="3">
-            <v-btn color="primary" class="ml-0" block @click="openCreateNewsletterDialog('Newsletter')">
-              <v-icon class="mr-2">mdi-plus-box</v-icon>
-              Create Newsletter
-            </v-btn>
-          </v-col>
-        </v-row>
+    <!-- Newsletters Tab -->
+    <v-tab-item v-if="activeTab === 1">
+      <v-row class="pa-4 align-center">
+        <v-col cols="12" md="5">
+          <v-text-field variant="outlined" v-model="searchQuery" label="Search newsletter name"
+            prepend-inner-icon="mdi-magnify" hide-details full-width></v-text-field>
+        </v-col>
+        <v-col cols="4" md="2">
+          <v-btn color="secondary" class="ml-0" block @click="openEditNewsletterDialog('Newsletter')"
+            :disabled="!selectedNewsletter">
+            <v-icon class="mr-2" left>mdi-update</v-icon>
+            Update
+          </v-btn>
+        </v-col>
+        <v-col cols="4" md="2">
+          <v-btn color="disabled" class="ml-0" block @click="deleteNewsletter" :disabled="!selectedNewsletter">
+            <v-icon class="mr-2" left>mdi-delete</v-icon>
+            Delete
+          </v-btn>
+        </v-col>
+        <v-col cols="4" md="3">
+          <v-btn color="primary" class="ml-0" block @click="openCreateNewsletterDialog('Newsletter')">
+            <v-icon class="mr-2">mdi-plus-box</v-icon>
+            Create Newsletter
+          </v-btn>
+        </v-col>
+      </v-row>
 
-        <v-data-table
-          :items="filteredNewsletters"
-          :headers="newsletterHeaders"
-          item-value="id"
-          show-select
-          items-per-page="8"
-          select-strategy="single"
-          v-model="selectedNewsletter"
-        ></v-data-table>
-      </v-tab-item>
+      <v-data-table :items="filteredNewsletters" :headers="newsletterHeaders" item-value="id" show-select
+        items-per-page="8" select-strategy="single" v-model="selectedNewsletter"></v-data-table>
+    </v-tab-item>
 
-      <!-- Customer Newsletters Tab -->
-      <v-tab-item v-if="activeTab === 2">
-        <v-row class="pa-4 align-center">
-          <v-col cols="12" md="5">
-            <v-text-field
-              variant="outlined"
-              v-model="searchQuery"
-              label="Search log"
-              prepend-inner-icon="mdi-magnify"
-              hide-details
-              full-width
-            ></v-text-field>
-          </v-col>
-        </v-row>
+    <!-- Customer Newsletters Tab -->
+    <v-tab-item v-if="activeTab === 2">
+      <v-row class="pa-4 align-center">
+        <v-col cols="12" md="5">
+          <v-text-field variant="outlined" v-model="searchQuery" label="Search log" prepend-inner-icon="mdi-magnify"
+            hide-details full-width></v-text-field>
+        </v-col>
+      </v-row>
 
-        <v-data-table
-          :items="filteredCustomerNewsletters"
-          :headers="customerNewsletterHeaders"
-          item-value="id"
-          show-select
-          items-per-page="8"
-        ></v-data-table>
-      </v-tab-item>
-    </v-tabs-items>
+      <v-data-table :items="filteredCustomerNewsletters" :headers="customerNewsletterHeaders" item-value="id"
+        show-select items-per-page="8"></v-data-table>
+    </v-tab-item>
+  </v-tabs-items>
 
-    <!-- Create/Edit Dialog -->
-    <v-dialog v-model="showDialog" max-width="500px">
-      <v-card>
-        <v-card-title><span class="headline">{{ dialogTitle }}</span></v-card-title>
-        <v-card-text>
+  <!-- Create/Edit Dialog -->
+  <v-dialog v-model="showDialog" max-width="1000px" max-height="800px">
+  <v-card style="display: flex; flex-direction: column; height: 100%;">
+    <v-card-title>
+      <span class="headline">{{ dialogTitle }}</span>
+    </v-card-title>
+
+    <v-card-text style="flex-grow: 1; overflow-y: auto;">
+      <v-row>
+        <!-- Form Section -->
+        <v-col cols="6">
           <v-form>
             <v-text-field v-model="currentItem.name" label="Name" required />
             <v-text-field v-model="currentItem.description" label="Description" required />
-            <v-text-field v-model="currentItem.content" label="Content" required />
+            <v-textarea
+              v-model="currentItem.content"
+              label="HTML Content"
+              outlined
+              required
+              auto-grow
+              style="min-height: 150px;"
+            />
             <v-alert v-if="errorMessage" type="error" class="mt-4" dense>
               {{ errorMessage }}
             </v-alert>
           </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="saveItem">{{ isEditMode ? 'Save' : 'Create' }}</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color="error" @click="showDialog = false">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+        </v-col>
 
-    <v-dialog v-model="showNewsletterDialog" max-width="500px">
-      <v-card>
-        <v-card-title><span class="headline">{{ dialogTitle }}</span></v-card-title>
-        <v-card-text>
-          <v-form>
-            <v-text-field v-model="currentItem.name" label="Name" required />
-            <v-text-field v-model="currentItem.description" label="Description" required />
-            <v-text-field v-model="currentItem.content" label="Content" required />
-            <v-text-field v-model="currentItem.templateId" label="Template" required />
-            <v-alert v-if="errorMessage" type="error" class="mt-4" dense>
-              {{ errorMessage }}
-            </v-alert>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="saveItem">{{ isEditMode ? 'Save' : 'Create' }}</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color="error" @click="showNewsletterDialog = false">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  
+        <!-- Preview Section -->
+        <v-col cols="6">
+          <div style="position: sticky; top: 0; max-height: calc(100vh - 180px); overflow-y: auto;">
+            <h3>Preview</h3>
+            <div
+              v-html="currentItem.content"
+              style="
+                border: 1px solid #ddd;
+                padding: 10px;
+                background: #f9f9f9;
+                min-height: 200px;
+              "
+            ></div>
+          </div>
+        </v-col>
+      </v-row>
+    </v-card-text>
+
+    <!-- Sticky Action Buttons -->
+    <v-card-actions style="position: sticky; bottom: 0; background: white; z-index: 10;">
+      <v-btn color="primary" @click="saveItem">{{ isEditMode ? 'Save' : 'Create' }}</v-btn>
+      <v-spacer></v-spacer>
+      <v-btn color="error" @click="showDialog = false">Cancel</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
+
+  <v-dialog v-model="showNewsletterDialog" max-width="500px">
+    <v-card>
+      <v-card-title><span class="headline">{{ dialogTitle }}</span></v-card-title>
+      <v-card-text>
+        <v-form>
+          <v-text-field v-model="currentItem.name" label="Name" required />
+          <v-text-field v-model="currentItem.description" label="Description" required />
+          <v-text-field v-model="currentItem.content" label="Content" required />
+          <v-text-field v-model="currentItem.templateId" label="Template" required />
+          <v-alert v-if="errorMessage" type="error" class="mt-4" dense>
+            {{ errorMessage }}
+          </v-alert>
+        </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="primary" @click="saveItem">{{ isEditMode ? 'Save' : 'Create' }}</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn color="error" @click="showNewsletterDialog = false">Cancel</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
 </template>
 
 <script>
