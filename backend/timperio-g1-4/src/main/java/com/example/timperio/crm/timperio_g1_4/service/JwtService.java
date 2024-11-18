@@ -9,6 +9,7 @@ import java.util.function.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,9 +18,9 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtService {
-    // private static final Dotenv dotenv = Dotenv.load();
-    // public static final String SECRET = dotenv.get("JWT_SECRET");
-    public static final String SECRET = System.getenv("JWT_SECRET"); // use this
+    private static final Dotenv dotenv = Dotenv.load();
+    public static final String SECRET = dotenv.get("JWT_SECRET");
+    // public static final String SECRET = System.getenv("JWT_SECRET"); // use this
     // for debugging
     
     // Generate token with given username
