@@ -15,7 +15,7 @@
             prepend-inner-icon="mdi-magnify" hide-details full-width></v-text-field>
         </v-col>
         <v-col cols="4" md="2">
-          <v-btn color="secondary" class="ml-0" block @click="openEditDialog('Template')" :disabled="!selectedTemplate">
+          <v-btn color="secondary" class="ml-0" block @click="openPreview()" :disabled="!selectedTemplate">
             <v-icon class="mr-2" left>mdi-update</v-icon>
             Preview
           </v-btn>
@@ -163,6 +163,27 @@
     </v-card>
   </v-dialog>
 
+  <v-dialog v-model="showPreview" max-width="800px" max-height="600px">
+    <v-card>
+      <v-card-title>
+        <span class="headline">Preview Template</span>
+      </v-card-title>
+
+      <v-card-text style="overflow-y: auto; max-height: 400px;">
+        <div style="
+        border: 1px solid #ddd;
+        padding: 10px;
+        background: #f9f9f9;
+      " v-html="selectedContent">
+        </div>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-btn color="primary" @click="showPreview = false">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
   <!-- send dialoge -->
   <v-dialog v-model="showSendDialog" max-width="1200px">
     <v-card color="white">
@@ -235,16 +256,10 @@
       <v-row class="pa-4 align-center">
         <!-- Search Box -->
         <v-col cols="6">
-            <v-text-field
-            variant="outlined"
-            v-model="searchQuery"
-            label="Search promotion name"
-            prepend-inner-icon="mdi-magnify"
-            hide-details
-            full-width
-            ></v-text-field>
+          <v-text-field variant="outlined" v-model="searchQuery" label="Search promotion name"
+            prepend-inner-icon="mdi-magnify" hide-details full-width></v-text-field>
         </v-col>
-        </v-row>
+      </v-row>
 
       <!-- Data Table -->
       <v-data-table :items="filteredPromotions" :headers="[
@@ -263,13 +278,13 @@
         </template>
       </v-data-table>
 
-    <v-card-actions style="position: sticky; bottom: 0; background: white; z-index: 10;">
-      <v-btn color="primary" @click="sendNewsletter" :disabled="selectedIds.length === 0">
-        <v-icon class="mr-1">mdi-send</v-icon>
-        Send 
-      </v-btn>        
-      <v-spacer></v-spacer>
-      <v-btn color="error" @click="showSendDialog = false">Cancel</v-btn>        
+      <v-card-actions style="position: sticky; bottom: 0; background: white; z-index: 10;">
+        <v-btn color="primary" @click="sendNewsletter" :disabled="selectedIds.length === 0">
+          <v-icon class="mr-1">mdi-send</v-icon>
+          Send
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn color="error" @click="showSendDialog = false">Cancel</v-btn>
       </v-card-actions>
 
     </v-card>
@@ -296,6 +311,7 @@ export default {
       customerNewsletters: [],
       selectedTemplate: null,
       selectedNewsletter: null,
+      showPreview: false,
 
       activeCustomersTab: 0,
       selectedOption: null,
@@ -329,7 +345,6 @@ export default {
           return [];
       }
     }, selectedRows() {
-      // TODO: Pass this to newsleter function this is list of the DTOs
       return this.filteredItems.filter((item) =>
         this.selectedIds.includes(item.customerId)
       );
@@ -340,13 +355,20 @@ export default {
           promotion.promotionName.toLowerCase().includes(this.searchQuery.toLowerCase())
         )
         : this.promotions;
-    },
+    }, selectedContent() {
+      if (this.selectedTemplate !== null && this.selectedTemplate !== undefined) {
+        const template = this.templates.find((item) => item.id === this.selectedTemplate[0]);
+        return template.content || "No template selected";
+      }
+      return "No template selected";
+    }
+
+
   },
   watch: {
     activeCustomersTab(newTab) {
       const segmentationType = ["recency", "frequency", "spending"][newTab];
       this.fetchCustomerData(segmentationType).then(() => {
-        // Automatically select the first option after data is fetched
         const firstOption = this.getOptionsForTab[0];
         if (firstOption) {
           this.selectedOption = firstOption;
@@ -356,14 +378,11 @@ export default {
     },
     selectedOption(newValue) {
       if (newValue) {
-        console.log("Selected option:", newValue);
-        console.log("Data for selected option:", this.allData[newValue]);
         this.filteredItems = this.processCustomerData(this.allData[newValue] || []);
       }
     },
   },
   created() {
-    // Initialize data for the first tab
     const initialTab = "recency";
     this.fetchCustomerData(initialTab).then(() => {
       const firstOption = this.recencyOptions[0];
@@ -453,8 +472,6 @@ export default {
 
         if (response.ok) {
           const data = await response.json();
-          console.log("Saved successfully", data);
-
           // Refresh the list of templates
           await this.fetchTemplates();
         } else {
@@ -495,9 +512,7 @@ export default {
 
         if (response.ok) {
           const data = await response.json();
-          console.log("API response data:", data);
           this.allData = data;
-          console.log(data)
         } else {
           console.error("Error fetching data:", await response.text());
         }
@@ -544,7 +559,6 @@ export default {
         if (response.ok) {
           const promotions = await response.json();
           this.promotions = promotions;
-          console.log(promotions)
         } else {
           console.error("Failed to fetch promotions.");
         }
@@ -567,51 +581,51 @@ export default {
       }
     },
 
-    
+
     async sendNewsletter() {
-    if (!this.selectedTemplate || this.selectedIds.length === 0) {
-      this.errorMessage = "Please select a template and at least one recipient.";
-      return;
-    }
-
-    const payload = {
-      newsletterTemplate: this.selectedTemplate[0],
-      customers: this.selectedIds,
-      promotions: this.selected,
-    };
-
-    console.log(JSON.stringify(payload))
-
-    const token = localStorage.getItem("jwt_token");
-    if (!token) {
-      console.error("JWT token not found.");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:8080/newsletters/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        const result = await response.text();
-        console.log(result);
-        this.$emit('show-notification', 'Newsletter sent successfully');
-        this.showSendDialog = false; 
-      } else {
-        const errorText = await response.text();
-        console.error("Error sending newsletter:", errorText);
-        this.errorMessage = errorText || "Failed to send the newsletter.";
+      if (!this.selectedTemplate || this.selectedIds.length === 0) {
+        this.errorMessage = "Please select a template and at least one recipient.";
+        return;
       }
-    } catch (error) {
-      console.error("Error during API call:", error);
-      this.errorMessage = "An error occurred while sending the newsletter.";
+
+      const payload = {
+        newsletterTemplate: this.selectedTemplate[0],
+        customers: this.selectedIds,
+        promotions: this.selected,
+      };
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        console.error("JWT token not found.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8080/newsletters/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (response.ok) {
+          const result = await response.text();
+          this.$emit('show-notification', 'Newsletter sent successfully');
+          this.showSendDialog = false;
+        } else {
+          const errorText = await response.text();
+          console.error("Error sending newsletter:", errorText);
+          this.errorMessage = errorText || "Failed to send the newsletter.";
+        }
+      } catch (error) {
+        console.error("Error during API call:", error);
+        this.errorMessage = "An error occurred while sending the newsletter.";
+      }
+    }, openPreview() {
+      this.currentItem = {};
+      this.showPreview = true;
+      console.log(this.selectedContent)
     }
-  },
 
 
   },
