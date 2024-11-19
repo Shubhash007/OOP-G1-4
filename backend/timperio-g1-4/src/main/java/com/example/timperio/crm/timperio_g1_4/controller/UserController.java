@@ -59,7 +59,7 @@ public class UserController {
         } catch (BadCredentialsException e) {
             return new ResponseEntity<String>("Invalid username or password", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -67,7 +67,7 @@ public class UserController {
     // this endpoint gets the info of the current logged on user
     @GetMapping("/get-user")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getCurrentUser() throws UsernameNotFoundException, Exception {
+    public ResponseEntity<?> getCurrentUser() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -82,14 +82,13 @@ public class UserController {
         } catch (UsernameNotFoundException e) {
             return new ResponseEntity<String>("Username not found", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<String>("An error has occured", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/update-password")
     @PreAuthorize("isAuthenticated()") // we check if the user is already logged in
-    public ResponseEntity<String> updatePassword(@RequestBody PasswordUpdateRequest newPassword)
-            throws BadCredentialsException {
+    public ResponseEntity<String> updatePassword(@RequestBody PasswordUpdateRequest newPassword) {
         try {
             if (newPassword == null || newPassword.getNewPassword().isEmpty()) {
                 return new ResponseEntity<String>("Password cannot be empty", HttpStatus.BAD_REQUEST);
@@ -99,26 +98,34 @@ public class UserController {
             boolean updated = userService.updateUserPassword(username, newPassword.getNewPassword());
             return updated ? new ResponseEntity<String>("Password updated successfully", HttpStatus.OK)
                     : new ResponseEntity<String>("An unknown error occured", HttpStatus.BAD_REQUEST);
-        } catch (BadCredentialsException e) {
-            return new ResponseEntity<String>("Incorrect password provided", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @GetMapping("/admin/get-all-users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            List<User> users = userService.getAllUsers();
+            return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // To be modified to the conventions
     @PostMapping("/admin/create-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
-        User savedUser = userService.addUser(userDto);
-        return savedUser != null ? new ResponseEntity<UserDto>(HttpStatus.CREATED)
-                : new ResponseEntity<UserDto>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> createUser(@RequestBody UserDto userDto) {
+        try {
+            User savedUser = userService.createUser(userDto);
+            return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @PostMapping("/admin/update-user")
@@ -132,6 +139,8 @@ public class UserController {
             return new ResponseEntity<String>("User not found", HttpStatus.BAD_REQUEST);
         } catch (BadCredentialsException e) {
             return new ResponseEntity<String>("Cannot update admin user", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -144,6 +153,8 @@ public class UserController {
                     : new ResponseEntity<String>("User deletion failed", HttpStatus.BAD_REQUEST);
         } catch (UsernameNotFoundException e) {
             return new ResponseEntity<String>("User not found", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

@@ -37,24 +37,42 @@ public class UserServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
     }
 
-    public List<User> getAllUsers() {
-        List<User> userList = userRepository.findAll();
+    public List<User> getAllUsers() throws Exception {
+        List<User> userList;
+        try {
+            userList = userRepository.findAll();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+
         for (User user : userList) {
             user.setPassword(null);
         }
         return userList;
     }
 
-    public User addUser(UserDto userDto) {
+    public User createUser(UserDto userDto) throws BadCredentialsException, IllegalArgumentException {
+        // check if all fields are present
+        if (userDto.getUsername() == null || userDto.getPassword() == null || userDto.getRole() == null) {
+            throw new IllegalArgumentException("Check if username, password and role are present");
+        }
+
+        // check if the username is already taken
+        if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
+            throw new BadCredentialsException("Username already taken");
+        }
+
         // Encode password before saving the user
         userDto.setPassword(encoder.encode(userDto.getPassword()));
         userRepository.save(UserMapper.mapToUser(userDto));
+
+        // return the user but mask the password
+        userDto.setPassword(null);
         return UserMapper.mapToUser(userDto);
     }
 
     public boolean updateUserPassword(String username, String newPassword)
-            throws BadCredentialsException {
-        // TODO Auto-generated method stub
+            throws UsernameNotFoundException, Exception {
         Optional<User> dbUser = userRepository.findByUsername(username);
         if (dbUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
@@ -65,12 +83,12 @@ public class UserServiceImpl implements UserDetailsService {
             userRepository.save(user);
             return true;
         } catch (Exception e) {
-            return false;
+            throw new Exception(e.getMessage());
         }
     }
 
     public boolean updateUser(UserUpdateRequest userUpdateRequest)
-            throws UsernameNotFoundException, BadCredentialsException {
+            throws UsernameNotFoundException, BadCredentialsException, Exception {
         Optional<User> dbUser = userRepository.findByUsername(userUpdateRequest.getUsername());
         if (dbUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
@@ -89,11 +107,11 @@ public class UserServiceImpl implements UserDetailsService {
             userRepository.save(user);
             return true;
         } catch (Exception e) {
-            return false;
+            throw new Exception(e.getMessage());
         }
     }
 
-    public boolean deleteUser(String username) throws UsernameNotFoundException {
+    public boolean deleteUser(String username) throws UsernameNotFoundException, Exception {
         Optional<User> dbUser = userRepository.findByUsername(username);
         if (dbUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
@@ -102,7 +120,7 @@ public class UserServiceImpl implements UserDetailsService {
             userRepository.delete(dbUser.get());
             return true;
         } catch (Exception e) {
-            return false;
+            throw new Exception(e.getMessage());
         }
     }
 }
