@@ -10,7 +10,7 @@ import com.example.timperio.crm.timperio_g1_4.entity.Product;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findByProductId(Long productId);
 
-    Product findByProductNameAndVariant(String productName, Integer variant);
+    Product findByProductNameAndProductVariant(String productName, Integer variant);
 
     List<Product> findByProductNameContaining(String productName);
 }

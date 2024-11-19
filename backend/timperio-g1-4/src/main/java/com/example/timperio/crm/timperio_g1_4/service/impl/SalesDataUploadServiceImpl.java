@@ -139,8 +139,8 @@ public class SalesDataUploadServiceImpl {
                         // create a new product
                         product = new Product();
                         product.setProductName(record.get("Product"));
-                        product.setVariant(Integer.valueOf(record.get("Variant")));
-                        product.setPrice(new BigDecimal(record.get("Price")));
+                        product.setProductVariant(Integer.valueOf(record.get("Variant")));
+                        product.setProductPrice(new BigDecimal(record.get("Price")));
                         product = productRepository.save(product);
                     }
                 }
