@@ -65,7 +65,13 @@ public class NewsletterController {
 
     @PostMapping("/send")
     public ResponseEntity<String> sendNewsletter(@RequestBody ProcessNewsletterDto processNewsletterDto) {
-        newsletterService.sendNewsletter(processNewsletterDto);
-        return ResponseEntity.ok("Newsletter sent successfully");
+        try{
+            newsletterService.sendNewsletter(processNewsletterDto);
+            return ResponseEntity.ok("Newsletter sent successfully");
+        } catch (Exception e) { 
+            return ResponseEntity.badRequest().body("Error sending newsletter: " + e.getMessage());
+        }
+        
+        
     }
 }

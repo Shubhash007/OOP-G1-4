@@ -127,7 +127,7 @@ public class NewsletterServiceImpl implements NewsletterService {
     }
 
     @Override
-    public NewsletterTemplateDto getTemplateById(Long templateId) {
+    public NewsletterTemplateDto getTemplateById(Long templateId) throws NoSuchElementException{
         NewsletterTemplate template = templateRepository.findById(templateId)
                 .orElseThrow(() -> new NoSuchElementException("Template not found"));
         return convertTemplateToDto(template);
@@ -181,7 +181,7 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     // ------------------ Newsletter Sending ------------------
     @Override
-    public void sendNewsletter(ProcessNewsletterDto processNewsletterDto){
+    public void sendNewsletter(ProcessNewsletterDto processNewsletterDto) throws Exception{
         // Placeholder for sending logic.
         // Customer customer = customerRepository.findById(customerNewsletterDto.getCustomerId().longValue())
         //         .orElseThrow(() -> new NoSuchElementException("Customer not found"));
@@ -230,7 +230,7 @@ public class NewsletterServiceImpl implements NewsletterService {
                     // Implement actual sending logic here
                     
                 } catch ( MessagingException | UnsupportedEncodingException e) {
-                    System.err.println("Failed to send email to " + customer.getEmail() + ": " + e.getMessage());
+                    throw new RuntimeException(e.getMessage());
                 }
             }
         });
