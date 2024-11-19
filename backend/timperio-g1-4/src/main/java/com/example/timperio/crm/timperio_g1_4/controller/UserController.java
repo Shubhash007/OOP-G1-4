@@ -45,15 +45,23 @@ public class UserController {
 
     // TODO: Create new custom exception for bad credentials (optional)
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) throws Exception {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            return new ResponseEntity<>(jwtService.generateToken(authRequest.getUsername()),
-                    HttpStatus.OK);
-        } else {
-            throw new UsernameNotFoundException("Invalid username or password");
+    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest)
+            throws BadCredentialsException, Exception {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+            if (authentication.isAuthenticated()) {
+                return new ResponseEntity<>(jwtService.generateToken(authRequest.getUsername()),
+                        HttpStatus.OK);
+            } else {
+                throw new BadCredentialsException("Invalid username or password");
+            }
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<String>("Invalid username or password", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+
     }
 
     // this endpoint gets the info of the current logged on user
