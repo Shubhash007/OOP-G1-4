@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ public class ProductController {
 
     // Create a new product
     @PostMapping("/create")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDto createProduct(@RequestBody ProductDto productDto) {
         return productService.createProduct(productDto);
@@ -36,18 +38,21 @@ public class ProductController {
 
     // Get all products
     @GetMapping("/get-all")
+    @PreAuthorize("isAuthenticated()")
     public List<ProductDto> getAllProducts() {
         return productService.getAllProducts();
     }
 
     // Get a product by ID
     @GetMapping("/get/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ProductDto getProductById(@PathVariable("id") Long productId) {
         return productService.getProductById(productId);
     }
 
     // Search products by name
     @GetMapping("/search")
+    @PreAuthorize("isAuthenticated()")
     public List<ProductDto> searchProducts(@RequestParam String name) {
         return productService.searchProducts(name);
     }

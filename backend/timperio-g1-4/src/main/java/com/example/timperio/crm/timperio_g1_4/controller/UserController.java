@@ -58,7 +58,7 @@ public class UserController {
 
     // this endpoint gets the info of the current logged on user
     @GetMapping("/get-user")
-    @PreAuthorize("isAuthenticated()") // we check if the user is already logged in
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUser() throws UsernameNotFoundException, Exception {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

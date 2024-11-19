@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,7 @@ public class PromotionController {
 
     // endpoint to create or update promotion
     @PostMapping("/create-update")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PromotionDto> createOrUpdatePromotion(@RequestBody PromotionDto promotionDto) {
         PromotionDto savedPromotion = promotionService.createOrUpdatePromotion(promotionDto);
         return new ResponseEntity<>(savedPromotion, HttpStatus.CREATED);
@@ -32,6 +34,7 @@ public class PromotionController {
 
     // endpoint to get all promotions
     @GetMapping("/get-all")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<PromotionDto>> getAllPromotions() {
         List<PromotionDto> promotions = promotionService.getAllPromotions();
         return new ResponseEntity<>(promotions, HttpStatus.OK);
@@ -39,6 +42,7 @@ public class PromotionController {
 
     // endpoint to get a specific promotion by ID
     @GetMapping("/get/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PromotionDto> getPromotionById(@PathVariable Long id) {
         // assuming a method in service that returns a promotion by id
         PromotionDto promotionDto = promotionService.getPromotionById(id);
@@ -51,6 +55,7 @@ public class PromotionController {
 
     // endpoint to delete multiple promotions by IDs
     @DeleteMapping("/delete")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deletePromotions(@RequestBody List<Long> ids) {
         boolean allDeleted = promotionService.deletePromotions(ids);
         if (allDeleted) {

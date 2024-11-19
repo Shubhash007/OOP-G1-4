@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.timperio.crm.timperio_g1_4.service.impl.SalesDataUploadServiceImpl;
 
 @RestController
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("/sales-data")
 public class SalesDataUploadController {
     @Autowired
