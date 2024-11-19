@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -129,7 +127,7 @@ public class SalesDataUploadServiceImpl {
                 } else {
                     // this block is only for setting up with the initial sales data
                     try {
-                        product = productRepository.findByProductNameAndVariant(record.get("Product"),
+                        product = productRepository.findByProductNameAndProductVariant(record.get("Product"),
                                 Integer.parseInt(record.get("Variant")));
                     } catch (IllegalArgumentException e) {
                         // ignore
