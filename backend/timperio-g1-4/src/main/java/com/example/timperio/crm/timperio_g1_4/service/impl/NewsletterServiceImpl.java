@@ -1,8 +1,8 @@
 package com.example.timperio.crm.timperio_g1_4.service.impl;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateSpec;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.templatemode.TemplateMode;
 
 import com.example.timperio.crm.timperio_g1_4.dto.CustomerNewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterDto;
@@ -32,7 +30,7 @@ import com.example.timperio.crm.timperio_g1_4.repository.NewsletterTemplateRepos
 import com.example.timperio.crm.timperio_g1_4.repository.ProductRepository;
 import com.example.timperio.crm.timperio_g1_4.repository.PromotionRepository;
 import com.example.timperio.crm.timperio_g1_4.service.NewsletterService;
-import com.example.timperio.crm.timperio_g1_4.mapper.ProductMapper;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -220,8 +218,8 @@ public class NewsletterServiceImpl implements NewsletterService {
                     MimeMessage mimeMessage = mailSender.createMimeMessage();
                     MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
         
-                    helper.setFrom(dotenv.get("MAIL_USERNAME"), "Shubhash");
-                    helper.setTo("shubhashees.2020@smu.edu.sg");
+                    helper.setFrom(dotenv.get("MAIL_USERNAME"), "Dennis");
+                    helper.setTo("dennis18hardianto@gmail.com");
         
                     helper.setSubject("Test");
                     helper.setText(htmlContent, true);

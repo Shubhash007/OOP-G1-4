@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -63,6 +61,12 @@ public class SalesDataUploadServiceImpl {
 
                 // parse zipcode for use in subsequent operations
                 String zipCodeStr = record.get("ZipCode");
+                String emailStr;
+                try {
+                    emailStr = record.get("Email");
+                } catch (IllegalArgumentException e) {
+                    emailStr = null;
+                }
 
                 // Customer
                 // we assume the CSV file is in chronlogical order, so new sales will always
@@ -83,6 +87,10 @@ public class SalesDataUploadServiceImpl {
                             zipCodes.add(newZipCode);
                             customer.setZipCodes(zipCodes);
                         }
+                    }
+                    // update the email
+                    if (emailStr != null && !emailStr.trim().isEmpty()) {
+                        customer.setEmail(emailStr);
                     }
 
                     // update the other values - returning_customer, purchase_count,
@@ -105,6 +113,10 @@ public class SalesDataUploadServiceImpl {
                         List<Long> zipCodes = new ArrayList<>();
                         zipCodes.add(Long.valueOf(record.get("ZipCode")));
                         customer.setZipCodes(zipCodes);
+                    }
+                    // update the email
+                    if (emailStr != null && !emailStr.trim().isEmpty()) {
+                        customer.setEmail(emailStr);
                     }
 
                     customerRepository.save(customer);

@@ -1,62 +1,67 @@
 <template>
-    <v-tabs v-model="activeTab" background-color="primary" dark>
-      <v-tab>Recency</v-tab>
-      <v-tab>Frequency</v-tab>
-      <v-tab>Monetary</v-tab>
-    </v-tabs>
+  <v-tabs v-model="activeTab" background-color="primary" dark>
+    <v-tab>Recency</v-tab>
+    <v-tab>Frequency</v-tab>
+    <v-tab>Monetary</v-tab>
+  </v-tabs>
 
-    <v-tabs-items v-model="activeTab">
-      <v-tab-item>
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-select v-model="selectedOption" :items="getOptionsForTab" label="Select Category"
-                variant="outlined"></v-select>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-tab-item>
-    </v-tabs-items>
+  <v-tabs-items v-model="activeTab">
+    <v-tab-item>
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <v-select v-model="selectedOption" :items="getOptionsForTab" label="Select Category"
+              variant="outlined"></v-select>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-tab-item>
+  </v-tabs-items>
 
-    <v-data-table :items="filteredItems" :headers="headers" items-per-page="10">
-      <template v-slot:body="{ items }">
-        <tr v-for="item in items" :key="item.customerId">
-          <td>{{ item.customerId }}</td>
-
-          <td>
-            <div style="display: flex; align-items: center;">
-              <span>
-                {{ item.zipCode.length > 15 ? item.zipCode.substring(0, 15) + "..." : item.zipCode }}
-              </span>
-              <v-tooltip v-if="item.zipCode.length > 15" bottom text="Full Zip Code">
-                <template v-slot:activator="{ props }">
-                  <v-btn v-bind="props" icon small
-                    style="box-shadow: none; background: none; border: none; margin-left: 8px;">
-                    <v-icon small color="primary">mdi-information</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{ item.zipCode }}</span>
-              </v-tooltip>
-            </div>
-          </td>
-
-          <td>{{ formatDate(item.lastPurchaseDate) }}</td>
-          <td>
-            <v-chip :color="item.acceptNewsletter ? 'green' : 'red'" dark>
-              {{ item.acceptNewsletter }}
-            </v-chip>
-          </td>
-          <td>{{ item.email }}</td>
-          <td>
-            <v-chip :color="item.returningCustomer ? 'blue' : 'grey'" dark>
-              {{ item.returningCustomer }}
-            </v-chip>
-          </td>
-          <td>{{ item.purchaseCount }}</td>
-          <td>{{ formatCurrency(item.totalExpenditure) }}</td>
-        </tr>
-      </template>
-    </v-data-table>
+  <v-data-table :items="filteredItems" :headers="headers" item-value="customerId" show-select v-model="selectedIds"
+    items-per-page="10">
+    <template v-slot:item.customerId="{ item }">
+      {{ item.customerId }}
+    </template>
+    <template v-slot:item.zipCode="{ item }">
+      <div style="display: flex; align-items: center;">
+        <span>
+          {{ item.zipCode.length > 15 ? item.zipCode.substring(0, 15) + "..." : item.zipCode }}
+        </span>
+        <v-tooltip v-if="item.zipCode.length > 15" bottom text="Full Zip Code">
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" icon small
+              style="box-shadow: none; background: none; border: none; margin-left: 8px;">
+              <v-icon small color="primary">mdi-information</v-icon>
+            </v-btn>
+          </template>
+          <span>{{ item.zipCode }}</span>
+        </v-tooltip>
+      </div>
+    </template>
+    <template v-slot:item.lastPurchaseDate="{ item }">
+      {{ formatDate(item.lastPurchaseDate) }}
+    </template>
+    <template v-slot:item.acceptNewsletter="{ item }">
+      <v-chip :color="item.acceptNewsletter ? 'green' : 'red'" dark>
+        {{ item.acceptNewsletter ? "Yes" : "No" }}
+      </v-chip>
+    </template>
+    <template v-slot:item.email="{ item }">
+      {{ item.email || "N/A" }}
+    </template>
+    <template v-slot:item.returningCustomer="{ item }">
+      <v-chip :color="item.returningCustomer ? 'blue' : 'grey'" dark>
+        {{ item.returningCustomer ? "Yes" : "No" }}
+      </v-chip>
+    </template>
+    <template v-slot:item.purchaseCount="{ item }">
+      {{ item.purchaseCount || 0 }}
+    </template>
+    <template v-slot:item.totalExpenditure="{ item }">
+      {{ formatCurrency(item.totalExpenditure) }}
+    </template>
+  </v-data-table>
 </template>
 
 <script>
@@ -64,14 +69,13 @@ export default {
   data() {
     return {
       activeTab: 0,
-      selectedOption: null, // Unified selection for all tabs
-      selected: null,
+      selectedOption: null,
+      selectedIds: [],
       recencyOptions: ["Active Customers", "Dormant Customers", "Returning Customers"],
       frequencyOptions: ["Frequent Shoppers", "Occasional Shoppers", "One-Time Buyers"],
       monetaryOptions: ["High-Value Customers", "Mid-Tier Customers", "Low-Spend Customers"],
-
-      allData: {}, // API response data
-      filteredItems: [], // Data displayed in the table
+      allData: {},
+      filteredItems: [],
 
     };
   },
@@ -87,6 +91,11 @@ export default {
         default:
           return [];
       }
+    }, selectedRows() {
+      // TODO: Pass this to newsleter function this is list of the DTOs
+      return this.filteredItems.filter((item) =>
+        this.selectedIds.includes(item.customerId)
+      );
     },
   },
   watch: {
@@ -148,6 +157,7 @@ export default {
           const data = await response.json();
           console.log("API response data:", data);
           this.allData = data;
+          console.log(data)
         } else {
           console.error("Error fetching data:", await response.text());
         }
