@@ -63,6 +63,12 @@ public class SalesDataUploadServiceImpl {
 
                 // parse zipcode for use in subsequent operations
                 String zipCodeStr = record.get("ZipCode");
+                String emailStr;
+                try {
+                    emailStr = record.get("Email");
+                } catch (IllegalArgumentException e) {
+                    emailStr = null;
+                }
 
                 // Customer
                 // we assume the CSV file is in chronlogical order, so new sales will always
@@ -83,6 +89,10 @@ public class SalesDataUploadServiceImpl {
                             zipCodes.add(newZipCode);
                             customer.setZipCodes(zipCodes);
                         }
+                    }
+                    // update the email
+                    if (emailStr != null && !emailStr.trim().isEmpty()) {
+                        customer.setEmail(emailStr);
                     }
 
                     // update the other values - returning_customer, purchase_count,
@@ -105,6 +115,10 @@ public class SalesDataUploadServiceImpl {
                         List<Long> zipCodes = new ArrayList<>();
                         zipCodes.add(Long.valueOf(record.get("ZipCode")));
                         customer.setZipCodes(zipCodes);
+                    }
+                    // update the email
+                    if (emailStr != null && !emailStr.trim().isEmpty()) {
+                        customer.setEmail(emailStr);
                     }
 
                     customerRepository.save(customer);
@@ -129,7 +143,7 @@ public class SalesDataUploadServiceImpl {
                 } else {
                     // this block is only for setting up with the initial sales data
                     try {
-                        product = productRepository.findByProductNameAndVariant(record.get("Product"),
+                        product = productRepository.findByProductNameAndProductVariant(record.get("Product"),
                                 Integer.parseInt(record.get("Variant")));
                     } catch (IllegalArgumentException e) {
                         // ignore
