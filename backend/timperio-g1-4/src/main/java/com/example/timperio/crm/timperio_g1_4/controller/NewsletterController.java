@@ -26,42 +26,36 @@ public class NewsletterController {
         this.newsletterService = newsletterService;
     }
 
-    @PostMapping("/templates")
+    @PostMapping("/create-template")
     public ResponseEntity<NewsletterTemplateDto> createTemplate(@RequestBody NewsletterTemplateDto templateDto) {
         NewsletterTemplateDto createdTemplate = newsletterService.createTemplate(templateDto);
         return ResponseEntity.ok(createdTemplate);
     }
 
-    @GetMapping("/templates")
+    @GetMapping("/get-all-templates")
     public ResponseEntity<List<NewsletterTemplateDto>> getAllTemplates() {
         return ResponseEntity.ok(newsletterService.getAllTemplates());
     }
 
-    @GetMapping("/templates/{id}")
+    @GetMapping("/get-template/{id}")
     public ResponseEntity<NewsletterTemplateDto> getTemplateById(@PathVariable Long id) {
         return ResponseEntity.ok(newsletterService.getTemplateById(id));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<NewsletterDto> createNewsletter(@RequestBody NewsletterDto newsletterDto) {
         return ResponseEntity.ok(newsletterService.createNewsletter(newsletterDto));
     }
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<List<NewsletterDto>> getAllNewsletters() {
         return ResponseEntity.ok(newsletterService.getAllNewsletters());
     }
 
-    @GetMapping("/{id:\\d+}")
+    @GetMapping("/get/{id:\\d+}")
     public ResponseEntity<NewsletterDto> getNewsletterById(@PathVariable Long id) {
         return ResponseEntity.ok(newsletterService.getNewsletterById(id));
     }
-
-    // @PostMapping("/send")
-    // public ResponseEntity<Void> sendNewsletter(@RequestBody CustomerNewsletterDto customerNewsletterDto) {
-    //     newsletterService.sendNewsletter(customerNewsletterDto);
-    //     return ResponseEntity.ok().build();
-    // }
 
     @PostMapping("/send")
     public ResponseEntity<String> sendNewsletter(@RequestBody ProcessNewsletterDto processNewsletterDto) {

@@ -28,20 +28,20 @@ public class ProductController {
     }
 
     // Create a new product
-    @PostMapping
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDto createProduct(@RequestBody ProductDto productDto) {
         return productService.createProduct(productDto);
     }
 
     // Get all products
-    @GetMapping
+    @GetMapping("/get-all")
     public List<ProductDto> getAllProducts() {
         return productService.getAllProducts();
     }
 
     // Get a product by ID
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ProductDto getProductById(@PathVariable("id") Long productId) {
         return productService.getProductById(productId);
     }

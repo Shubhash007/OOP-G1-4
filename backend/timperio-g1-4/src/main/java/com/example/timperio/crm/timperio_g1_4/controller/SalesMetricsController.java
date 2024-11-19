@@ -19,7 +19,7 @@ public class SalesMetricsController {
     @Autowired
     private SalesMetricsServiceImpl salesMetricsService;
 
-    @GetMapping("/")
+    @GetMapping("/get")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getSalesMetrics(boolean individual, Optional<Long> customerId)
             throws IllegalArgumentException {

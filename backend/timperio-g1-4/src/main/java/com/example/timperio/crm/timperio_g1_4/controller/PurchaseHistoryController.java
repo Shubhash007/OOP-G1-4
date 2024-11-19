@@ -27,7 +27,7 @@ public class PurchaseHistoryController {
     @Autowired
     private PurchaseHistoryServiceImpl purchaseHistoryService;
 
-    @GetMapping("/all")
+    @GetMapping("/get-all")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<SaleDto>> getAllPurchaseHistory() {
         return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.getAllPurchaseHistory(), HttpStatus.OK);

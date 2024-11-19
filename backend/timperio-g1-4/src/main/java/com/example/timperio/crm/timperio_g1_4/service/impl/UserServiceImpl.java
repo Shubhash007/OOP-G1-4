@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserDetailsService {
             userUpdateRequest.getNewPassword().ifPresent(password -> {
                 String hashedPassword = encoder.encode(password); // Hash the password
                 user.setPassword(hashedPassword);
-            });            
+            });
             userUpdateRequest.getNewRole().ifPresent(user::setRole);
             userRepository.save(user);
             return true;
@@ -93,8 +93,8 @@ public class UserServiceImpl implements UserDetailsService {
         }
     }
 
-    public boolean deleteUser(String username) throws UsernameNotFoundException {
-        Optional<User> dbUser = userRepository.findByUsername(username);
+    public boolean deleteUser(Long userId) throws UsernameNotFoundException {
+        Optional<User> dbUser = userRepository.findById(userId);
         if (dbUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }

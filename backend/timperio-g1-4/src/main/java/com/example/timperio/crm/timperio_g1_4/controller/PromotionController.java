@@ -17,28 +17,28 @@ import com.example.timperio.crm.timperio_g1_4.dto.PromotionDto;
 import com.example.timperio.crm.timperio_g1_4.service.PromotionService;
 
 @RestController
-@RequestMapping("/sales/promotions")
+@RequestMapping("/promotions")
 public class PromotionController {
 
     @Autowired
     private PromotionService promotionService;
 
     // endpoint to create or update promotion
-    @PostMapping
+    @PostMapping("/create-update")
     public ResponseEntity<PromotionDto> createOrUpdatePromotion(@RequestBody PromotionDto promotionDto) {
         PromotionDto savedPromotion = promotionService.createOrUpdatePromotion(promotionDto);
         return new ResponseEntity<>(savedPromotion, HttpStatus.CREATED);
     }
 
     // endpoint to get all promotions
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<List<PromotionDto>> getAllPromotions() {
         List<PromotionDto> promotions = promotionService.getAllPromotions();
         return new ResponseEntity<>(promotions, HttpStatus.OK);
     }
 
     // endpoint to get a specific promotion by ID
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<PromotionDto> getPromotionById(@PathVariable Long id) {
         // assuming a method in service that returns a promotion by id
         PromotionDto promotionDto = promotionService.getPromotionById(id);
@@ -50,7 +50,7 @@ public class PromotionController {
     }
 
     // endpoint to delete multiple promotions by IDs
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deletePromotions(@RequestBody List<Long> ids) {
         boolean allDeleted = promotionService.deletePromotions(ids);
         if (allDeleted) {
