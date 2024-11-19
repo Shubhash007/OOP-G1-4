@@ -43,15 +43,6 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    // TODO: deprecate this endpoint before submission - maybe create a default
-    // admin user when the database is created
-    @PostMapping("/addNewUser")
-    public ResponseEntity<UserDto> addNewUser(@RequestBody UserDto userDto) {
-        User savedUser = userService.addUser(userDto);
-        return savedUser != null ? new ResponseEntity<UserDto>(HttpStatus.CREATED)
-                : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
     // TODO: Create new custom exception for bad credentials (optional)
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) throws Exception {
