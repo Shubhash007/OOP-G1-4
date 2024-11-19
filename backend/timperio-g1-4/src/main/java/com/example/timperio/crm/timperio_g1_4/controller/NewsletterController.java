@@ -3,6 +3,7 @@ package com.example.timperio.crm.timperio_g1_4.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,44 +27,45 @@ public class NewsletterController {
         this.newsletterService = newsletterService;
     }
 
-    @PostMapping("/templates")
+    @PostMapping("/create-template")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<NewsletterTemplateDto> createTemplate(@RequestBody NewsletterTemplateDto templateDto) {
         NewsletterTemplateDto createdTemplate = newsletterService.createTemplate(templateDto);
         return ResponseEntity.ok(createdTemplate);
     }
 
-    @GetMapping("/templates")
+    @GetMapping("/get-all-templates")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<NewsletterTemplateDto>> getAllTemplates() {
         return ResponseEntity.ok(newsletterService.getAllTemplates());
     }
 
-    @GetMapping("/templates/{id}")
+    @GetMapping("/get-template/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<NewsletterTemplateDto> getTemplateById(@PathVariable Long id) {
         return ResponseEntity.ok(newsletterService.getTemplateById(id));
     }
 
-    @PostMapping
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('ROLE_MARKETING')")
     public ResponseEntity<NewsletterDto> createNewsletter(@RequestBody NewsletterDto newsletterDto) {
         return ResponseEntity.ok(newsletterService.createNewsletter(newsletterDto));
     }
 
-    @GetMapping
+    @GetMapping("/get-all")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<NewsletterDto>> getAllNewsletters() {
         return ResponseEntity.ok(newsletterService.getAllNewsletters());
     }
 
-    @GetMapping("/{id:\\d+}")
+    @GetMapping("/get/{id:\\d+}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<NewsletterDto> getNewsletterById(@PathVariable Long id) {
         return ResponseEntity.ok(newsletterService.getNewsletterById(id));
     }
 
-    // @PostMapping("/send")
-    // public ResponseEntity<Void> sendNewsletter(@RequestBody CustomerNewsletterDto customerNewsletterDto) {
-    //     newsletterService.sendNewsletter(customerNewsletterDto);
-    //     return ResponseEntity.ok().build();
-    // }
-
     @PostMapping("/send")
+    @PreAuthorize("hasRole('ROLE_MARKETING')")
     public ResponseEntity<String> sendNewsletter(@RequestBody ProcessNewsletterDto processNewsletterDto) {
         try{
             newsletterService.sendNewsletter(processNewsletterDto);

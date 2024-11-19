@@ -42,7 +42,7 @@ public class CustomerController {
 
     // create a customer
     @PostMapping("/create")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SALES'), hasRole('ROLE_MARKETING')")
     public ResponseEntity<?> createCustomer(@RequestBody CustomerDto customerDto) {
         try {
             Customer createdCustomer = customerService.createCustomer(customerDto);
@@ -57,7 +57,7 @@ public class CustomerController {
     // the only fields that should be updatable are the zip code, email, and
     // newsletter subscription
     @PutMapping("/update")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SALES'), hasRole('ROLE_MARKETING')")
     public ResponseEntity<?> updateCustomer(@RequestBody CustomerDto customerDto) {
         try {
             Customer updatedCustomer = customerService.updateCustomer(customerDto);
@@ -70,7 +70,7 @@ public class CustomerController {
 
     // delete a customer by id
     @DeleteMapping("/delete")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SALES'), hasRole('ROLE_MARKETING')")
     public ResponseEntity<?> deleteCustomer(@RequestParam Long customerId) {
         try {
             customerService.deleteCustomer(customerId);
@@ -82,8 +82,8 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/segmentation-recency")
-    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/segmentation/recency")
+    @PreAuthorize("hasRole('ROLE_MARKETING')")
     public ResponseEntity<?> getCustomerListByRecency() {
         try {
             HashMap<String, List<CustomerDto>> customerList = customerService.getCustomerListByRecency();
@@ -94,8 +94,8 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/segmentation-frequency")
-    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/segmentation/frequency")
+    @PreAuthorize("hasRole('ROLE_MARKETING')")
     public ResponseEntity<?> getCustomerListByFrequency() {
         try {
             HashMap<String, List<CustomerDto>> customerList = customerService.getCustomerListByFrequency();
@@ -106,8 +106,8 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/segmentation-spending")
-    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/segmentation/spending")
+    @PreAuthorize("hasRole('ROLE_MARKETING')")
     public ResponseEntity<?> getCustomerListBySpending() {
         try {
             HashMap<String, List<CustomerDto>> customerList = customerService.getCustomerListBySpending();

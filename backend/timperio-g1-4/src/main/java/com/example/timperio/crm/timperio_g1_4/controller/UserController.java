@@ -11,7 +11,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,12 +25,13 @@ import com.example.timperio.crm.timperio_g1_4.service.JwtService;
 import com.example.timperio.crm.timperio_g1_4.service.UserInfoDetails;
 import com.example.timperio.crm.timperio_g1_4.service.impl.UserServiceImpl;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -42,15 +42,6 @@ public class UserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    // TODO: deprecate this endpoint before submission - maybe create a default
-    // admin user when the database is created
-    @PostMapping("/addNewUser")
-    public ResponseEntity<UserDto> addNewUser(@RequestBody UserDto userDto) {
-        User savedUser = userService.addUser(userDto);
-        return savedUser != null ? new ResponseEntity<UserDto>(HttpStatus.CREATED)
-                : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
 
     // TODO: Create new custom exception for bad credentials (optional)
     @PostMapping("/login")
@@ -66,8 +57,8 @@ public class UserController {
     }
 
     // this endpoint gets the info of the current logged on user
-    @GetMapping("/users/get-user")
-    @PreAuthorize("isAuthenticated()") // we check if the user is already logged in
+    @GetMapping("/get-user")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCurrentUser() throws UsernameNotFoundException, Exception {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -87,7 +78,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/users/update-password")
+    @PostMapping("/update-password")
     @PreAuthorize("isAuthenticated()") // we check if the user is already logged in
     public ResponseEntity<String> updatePassword(@RequestBody PasswordUpdateRequest newPassword)
             throws BadCredentialsException {
@@ -106,7 +97,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/admin/getAllUsers")
+    @GetMapping("/admin/get-all-users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -114,7 +105,7 @@ public class UserController {
     }
 
     // To be modified to the conventions
-    @PostMapping("/admin/createUser")
+    @PostMapping("/admin/create-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
         User savedUser = userService.addUser(userDto);
@@ -122,7 +113,7 @@ public class UserController {
                 : new ResponseEntity<UserDto>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/admin/updateUser")
+    @PostMapping("/admin/update-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> updateUser(@RequestBody UserUpdateRequest UserUpdateRequest) {
         try {
@@ -136,11 +127,11 @@ public class UserController {
         }
     }
 
-    @PostMapping("/admin/deleteUser")
+    @DeleteMapping("/admin/delete-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteUser(@RequestParam String username) {
+    public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
         try {
-            Boolean deleted = userService.deleteUser(username);
+            Boolean deleted = userService.deleteUser(userId);
             return deleted ? new ResponseEntity<String>("User deleted successfully", HttpStatus.OK)
                     : new ResponseEntity<String>("User deletion failed", HttpStatus.BAD_REQUEST);
         } catch (UsernameNotFoundException e) {
