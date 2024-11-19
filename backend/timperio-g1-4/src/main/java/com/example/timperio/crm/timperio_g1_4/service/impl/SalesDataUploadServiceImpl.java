@@ -129,7 +129,7 @@ public class SalesDataUploadServiceImpl {
                 } else {
                     // this block is only for setting up with the initial sales data
                     try {
-                        product = productRepository.findByProductNameAndVariant(record.get("Product"),
+                        product = productRepository.findByProductNameAndProductVariant(record.get("Product"),
                                 Integer.parseInt(record.get("Variant")));
                     } catch (IllegalArgumentException e) {
                         // ignore
