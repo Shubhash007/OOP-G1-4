@@ -40,10 +40,11 @@
         <v-data-table
         :items="filteredPromotions"
         :headers="[
-            { title: 'Promotion Name', key: 'promotionName'},
+            { title: 'Name', key: 'promotionName'},
             { title: 'Description', key: 'promotionDescription'},
             { title: 'Type', key: 'promotionType'},
-            { title: ''}
+            { title: 'Expiry', key: 'validUntil'},
+            { title: '', key: 'actions'}
             ]"
         item-value="promotionId"
         show-select
@@ -52,8 +53,64 @@
         v-model="selected"
         @update:modelValue="updateSelected"
         >
+        <template v-slot:[`item.promotionDescription`]="{ item }">
+            <span class="truncate-text">{{ item.promotionDescription }}</span>
+        </template>
+        <template v-slot:[`item.promotionType`]="{ item }">
+            {{ formatPromotionType(item.promotionType) }}
+        </template>
+        <template v-slot:[`item.actions`]="{ item }">
+        <v-btn icon size="x-small" @click="showDetails(item)">
+            <v-icon size="large">mdi-eye</v-icon>
+            </v-btn>
+        </template>
         </v-data-table>
-    </template>
+
+        <v-dialog v-model="dialogVisible" max-width="600px">
+            <v-card>
+            <v-card-title class="mx-2 d-flex justify-space-between align-center">
+                <div class="text-h5">
+                    <strong>{{ selectedPromotion.promotionName }}</strong>
+                </div>
+
+                <v-btn
+                    icon="mdi-close"
+                    variant="text"
+                    @click="dialogVisible = false"
+                ></v-btn>
+            </v-card-title>
+            <v-card-subtitle class="mb-4 mx-2">
+                {{ formatPromotionType(selectedPromotion.promotionType) }}
+            </v-card-subtitle>
+            <v-divider></v-divider>
+            <v-card-text>
+                <v-container>
+                <v-row>
+                    <v-col cols="12">
+                    <p><strong>Description:</strong> {{ selectedPromotion.promotionDescription }}</p>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12" md="6">
+                    <p><strong>Valid Until:</strong> {{ selectedPromotion.validUntil }}</p>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                    <p><strong>Discount Rate:</strong> {{ selectedPromotion.discountRate || 'N/A' }}</p>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12" md="6">
+                    <p><strong>Buy Quantity:</strong> {{ selectedPromotion.buyQuantity || 'N/A' }}</p>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                    <p><strong>Free Quantity:</strong> {{ selectedPromotion.freeQuantity || 'N/A' }}</p>
+                    </v-col>
+                </v-row>
+                </v-container>
+            </v-card-text>
+            </v-card>
+        </v-dialog>
+</template>
     
     <script>
     export default {
@@ -65,6 +122,8 @@
             searchQuery: '',
             successMessage: '',
             errorMessage: '',
+            dialogVisible: false, // Controls the visibility of the dialog
+            selectedPromotion: {}, // Holds the promotion to be displayed in the dialog
         };
         },
         computed: {
@@ -83,6 +142,21 @@
         await this.fetchPromotions();
         },
         methods: {
+        showDetails(promotion) {
+            this.selectedPromotion = promotion; // Set the selected promotion details
+            this.dialogVisible = true; // Show the dialog
+        },
+        formatPromotionType(type) {
+            if (type === "GETFREE") {
+                return "Get X Free";
+            }
+            else if (type === "DISCOUNT"){
+                return "Discount %";
+            }
+            else if (type === "RELATED"){
+                return "Related % Discount"
+            }
+        },
         showSuccessAlert(message) {
             this.successMessage = message;
             // Set timeout to hide the alert after 3 seconds (3000 ms)
@@ -163,4 +237,14 @@
         },
     };
     </script>
+
+<style scoped>
+.truncate-text {
+  white-space: nowrap;       /* Ensures the text stays on one line */
+  overflow: hidden;          /* Hides any overflow text */
+  text-overflow: ellipsis;   /* Adds the ellipsis to hidden text */
+  display: block;            /* Required for some browsers */
+  max-width: 200px;          /* Adjust this width as needed */
+}
+</style>
 
