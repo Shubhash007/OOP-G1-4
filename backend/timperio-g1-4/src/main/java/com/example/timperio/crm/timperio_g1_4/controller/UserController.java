@@ -11,7 +11,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,7 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -58,7 +57,7 @@ public class UserController {
     }
 
     // this endpoint gets the info of the current logged on user
-    @GetMapping("/users/get-user")
+    @GetMapping("/get-user")
     @PreAuthorize("isAuthenticated()") // we check if the user is already logged in
     public ResponseEntity<?> getCurrentUser() throws UsernameNotFoundException, Exception {
         try {
@@ -79,7 +78,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/users/update-password")
+    @PostMapping("/update-password")
     @PreAuthorize("isAuthenticated()") // we check if the user is already logged in
     public ResponseEntity<String> updatePassword(@RequestBody PasswordUpdateRequest newPassword)
             throws BadCredentialsException {
