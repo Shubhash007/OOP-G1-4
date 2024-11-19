@@ -93,8 +93,8 @@ public class UserServiceImpl implements UserDetailsService {
         }
     }
 
-    public boolean deleteUser(Long userId) throws UsernameNotFoundException {
-        Optional<User> dbUser = userRepository.findById(userId);
+    public boolean deleteUser(String username) throws UsernameNotFoundException {
+        Optional<User> dbUser = userRepository.findByUsername(username);
         if (dbUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
