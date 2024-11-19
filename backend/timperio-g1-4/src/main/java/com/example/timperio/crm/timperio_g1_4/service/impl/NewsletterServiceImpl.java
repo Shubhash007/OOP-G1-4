@@ -2,6 +2,7 @@ package com.example.timperio.crm.timperio_g1_4.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -17,16 +18,21 @@ import org.thymeleaf.templatemode.TemplateMode;
 import com.example.timperio.crm.timperio_g1_4.dto.CustomerNewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterTemplateDto;
+import com.example.timperio.crm.timperio_g1_4.dto.ProcessNewsletterDto;
+import com.example.timperio.crm.timperio_g1_4.dto.PromotionDto;
 import com.example.timperio.crm.timperio_g1_4.entity.Customer;
 import com.example.timperio.crm.timperio_g1_4.entity.CustomerNewsletter;
 import com.example.timperio.crm.timperio_g1_4.entity.Newsletter;
 import com.example.timperio.crm.timperio_g1_4.entity.NewsletterTemplate;
+import com.example.timperio.crm.timperio_g1_4.entity.Promotion;
 import com.example.timperio.crm.timperio_g1_4.repository.CustomerNewsletterRepository;
 import com.example.timperio.crm.timperio_g1_4.repository.CustomerRepository;
 import com.example.timperio.crm.timperio_g1_4.repository.NewsletterRepository;
 import com.example.timperio.crm.timperio_g1_4.repository.NewsletterTemplateRepository;
+import com.example.timperio.crm.timperio_g1_4.repository.ProductRepository;
+import com.example.timperio.crm.timperio_g1_4.repository.PromotionRepository;
 import com.example.timperio.crm.timperio_g1_4.service.NewsletterService;
-
+import com.example.timperio.crm.timperio_g1_4.mapper.ProductMapper;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -57,6 +63,12 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private PromotionRepository promotionRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     // ------------------ Newsletter Operations ------------------
     @Override
@@ -167,53 +179,62 @@ public class NewsletterServiceImpl implements NewsletterService {
     }
     
 
+    // ------------------ Newsletter Sending ------------------
     @Override
-    public void sendNewsletter(){
+    public void sendNewsletter(ProcessNewsletterDto processNewsletterDto){
         // Placeholder for sending logic.
         // Customer customer = customerRepository.findById(customerNewsletterDto.getCustomerId().longValue())
         //         .orElseThrow(() -> new NoSuchElementException("Customer not found"));
-        NewsletterTemplate newsletterTemplate = templateRepository.findById((long)3)
+        final List<Long> customers = processNewsletterDto.getCustomers();
+        final Long newsletterTemplateId =  processNewsletterDto.getNewsletterTemplate();
+        final List<Long> promotionIds = processNewsletterDto.getPromotions();
+
+        NewsletterTemplate newsletterTemplate = templateRepository.findById((long)newsletterTemplateId)
                 .orElseThrow(() -> new NoSuchElementException("Newsletter template not found"));
         System.out.println("Sending newsletter to customer...");
 
-
+        ArrayList<PromotionDto> promotions = new ArrayList<>();
+        for (Long promotionId : promotionIds) {
+            Promotion promotion = promotionRepository.findById((long)promotionId)
+                .orElseThrow(() -> new NoSuchElementException("Promotion not found"));
+            promotions.add(mapToPromotionDto(promotion));
+        }
+        
+        //  ------------------- Thymeleaf Template Engine -------------------
         Context context = new Context();
         context.setVariable("customerName", "Bob");
-        // context.setVariable("products", products);
+        context.setVariable("promotions", promotions);
+
 
         String templateContent = newsletterTemplate.getContent();
         templateContent = templateContent.replace("\\${", "${");
-        TemplateSpec templateSpec = new TemplateSpec(templateContent, TemplateMode.HTML);
+        // TemplateSpec templateSpec = new TemplateSpec(templateContent, TemplateMode.HTML);
 
-        String htmlContent = templateEngine.process(templateSpec, context);
+        String htmlContent = templateEngine.process(templateContent, context);
 
 
-
-        try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            // helper.setTo(customer.getEmail());
-            // helper.setSubject(newsletter.getName());
-            // helper.setText(newsletter.getContent(), true);
-
-            // try {
-            //     mailSender.send(mimeMessage);
-            // } catch (MessagingException e) {
-            //     e.printStackTrace();
-            // }
-            helper.setFrom(dotenv.get("MAIL_USERNAME"), "Shubhash");
-            helper.setTo("shubhashees.2020@smu.edu.sg");
-
-            helper.setSubject("Test");
-            helper.setText(htmlContent, true);
-
-            mailSender.send(mimeMessage);
-            // Implement actual sending logic here
+        customerRepository.findAllById(customers).forEach(customer -> {
             
-        } catch ( MessagingException | UnsupportedEncodingException e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
+            if (customer.getEmail() != null){
+                try {
+                    MimeMessage mimeMessage = mailSender.createMimeMessage();
+                    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        
+                    helper.setFrom(dotenv.get("MAIL_USERNAME"), "Shubhash");
+                    helper.setTo("shubhashees.2020@smu.edu.sg");
+        
+                    helper.setSubject("Test");
+                    helper.setText(htmlContent, true);
+        
+                    mailSender.send(mimeMessage);
+                    // Implement actual sending logic here
+                    
+                } catch ( MessagingException | UnsupportedEncodingException e) {
+                    System.err.println("Failed to send email to " + customer.getEmail() + ": " + e.getMessage());
+                }
+            }
+        });
+        //  ------------------- Send Email -------------------
     }
 
     // ------------------ Helper Converters ------------------
@@ -254,4 +275,35 @@ public class NewsletterServiceImpl implements NewsletterService {
         }
         return dto;
     }
+
+    private PromotionDto mapToPromotionDto(Promotion promotion) {
+        PromotionDto promotionDto = new PromotionDto();
+        promotionDto.setPromotionId(promotion.getPromotionId());
+        promotionDto.setPromotionName(promotion.getPromotionName());
+        promotionDto.setPromotionDescription(promotion.getPromotionDescription());
+        promotionDto.setPromotionType(promotion.getPromotionType());
+        promotionDto.setValidUntil(promotion.getValidUntil());
+        promotionDto.setDiscountRate(promotion.getDiscountRate());
+        promotionDto.setFreeQuantity(promotion.getFreeQuantity());
+        promotionDto.setBuyQuantity(promotion.getBuyQuantity());
+        promotionDto.setFrequentShopperRequired(promotion.isFrequentShopperRequired());
+
+        // Set main product id
+        if (promotion.getMainProduct() != null) {
+            promotionDto.setMainProductId(promotion.getMainProduct().getProductId());
+        }
+
+        // Set related product ids
+        if (promotion.getRelatedProducts() != null) {
+            promotionDto.setRelatedProductIds(
+                promotion.getRelatedProducts().stream()
+                    .map(product -> product.getProductId())
+                    .collect(Collectors.toList())
+            );
+        }
+
+        return promotionDto;
+    }
+
+    
 }

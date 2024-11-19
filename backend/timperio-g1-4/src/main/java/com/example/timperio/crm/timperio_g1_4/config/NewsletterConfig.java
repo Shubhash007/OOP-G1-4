@@ -20,8 +20,9 @@ public class NewsletterConfig {
     @Bean
     public ITemplateResolver stringTemplateResolver() {
         StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
-        stringTemplateResolver.setTemplateMode(TemplateMode.HTML); // Or TEXT, depending on your templates
+        stringTemplateResolver.setTemplateMode(TemplateMode.HTML);
         stringTemplateResolver.setCacheable(false);
+        stringTemplateResolver.setCheckExistence(true);
         return stringTemplateResolver;
     }
 

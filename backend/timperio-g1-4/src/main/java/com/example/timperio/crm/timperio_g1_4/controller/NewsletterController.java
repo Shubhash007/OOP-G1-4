@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.timperio.crm.timperio_g1_4.dto.CustomerNewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterTemplateDto;
+import com.example.timperio.crm.timperio_g1_4.dto.ProcessNewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.service.NewsletterService;
 
 @RestController
@@ -62,9 +63,9 @@ public class NewsletterController {
     //     return ResponseEntity.ok().build();
     // }
 
-    @GetMapping("/send")
-    public ResponseEntity<String> sendNewsletter() {
-        newsletterService.sendNewsletter();
+    @PostMapping("/send")
+    public ResponseEntity<String> sendNewsletter(@RequestBody ProcessNewsletterDto processNewsletterDto) {
+        newsletterService.sendNewsletter(processNewsletterDto);
         return ResponseEntity.ok("Newsletter sent successfully");
     }
 }

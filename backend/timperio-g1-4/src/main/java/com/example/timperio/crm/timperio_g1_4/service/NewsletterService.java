@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.timperio.crm.timperio_g1_4.dto.CustomerNewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterTemplateDto;
+import com.example.timperio.crm.timperio_g1_4.dto.ProcessNewsletterDto;
 
 public interface NewsletterService {
     NewsletterDto createNewsletter(NewsletterDto newsletterDto);
@@ -22,5 +23,5 @@ public interface NewsletterService {
     List<CustomerNewsletterDto> getNewslettersForCustomer(Long customerId);
     List<CustomerNewsletterDto> getCustomersForNewsletter(Long newsletterId);
 
-    void sendNewsletter();
+    void sendNewsletter(ProcessNewsletterDto processNewsletterDto);
 }
