@@ -19,6 +19,13 @@
                         outlined
                     ></v-text-field>
 
+                    <!-- Frequent Shopper -->
+                    <v-switch 
+                        v-model="promotion.frequentShopperRequired"
+                        label="Only Applicable for Frequent Shoppers?"
+                        inset
+                    ></v-switch>
+
                     <!-- Promotion Type -->
                     <v-select
                         v-model="promotion.promotionType"
@@ -40,6 +47,15 @@
                         v-if="promotion.promotionType=='DISCOUNT'"
                         v-model="promotion.discountRate"
                         label="Discount Rate"
+                        type="number"
+                        outlined
+                    ></v-text-field>
+
+                    <!-- Buy Quantity -->
+                    <v-text-field
+                        v-if="promotion.promotionType=='GETFREE'"
+                        v-model="promotion.buyQuantity"
+                        label="Buy Quantity"
                         type="number"
                         outlined
                     ></v-text-field>
