@@ -31,7 +31,7 @@
         </v-list-item>
 
         <v-list-item to="/newsletters" prepend-icon="mdi-email-newsletter" link class="p-6">
-          <v-list-item-title>Newsleters</v-list-item-title>
+          <v-list-item-title>Newsletters</v-list-item-title>
         </v-list-item>
         <v-list-item to="/promotions" prepend-icon="mdi-currency-usd" link class="p-6">
           <v-list-item-title>Promotions</v-list-item-title>

@@ -1,8 +1,10 @@
 <template>
     <v-container>
-        <v-card>
+        <v-card style="display: flex; flex-direction: column; height: 400px; overflow-y: auto"   
+        class="pa-4"
+        >
             <v-card-text class="pa-6">
-                <v-card-title class="my-4">Create a Promotion</v-card-title>
+                <v-card-title class="mb-4">Create a Promotion</v-card-title>
                 <!-- Form to create promotion -->
                 <v-form>
                     <!-- Promotion Name -->
@@ -44,7 +46,7 @@
 
                     <!-- Discount Rate -->
                     <v-text-field
-                        v-if="promotion.promotionType=='DISCOUNT'"
+                        v-if="promotion.promotionType=='% Discount'"
                         v-model="promotion.discountRate"
                         label="Discount Rate"
                         type="number"
@@ -53,7 +55,7 @@
 
                     <!-- Buy Quantity -->
                     <v-text-field
-                        v-if="promotion.promotionType=='GETFREE'"
+                        v-if="promotion.promotionType=='Get X Free'"
                         v-model="promotion.buyQuantity"
                         label="Buy Quantity"
                         type="number"
@@ -116,7 +118,7 @@
 
                     <!-- Related Products Search Bar -->
                     <v-text-field
-                        v-if="promotion.promotionType=='RELATED'"
+                        v-if="promotion.promotionType=='Related Products'"
                         v-model="relatedProductsSearch"
                         label="Search Related Products"
                         outlined
@@ -125,7 +127,7 @@
                     />
 
                     <!-- Display Selected Related Products -->
-                    <div class="mb-4" v-if="promotion.promotionType=='RELATED' && promotion.relatedProducts.length" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="mb-4" v-if="promotion.promotionType=='Related Products' && promotion.relatedProducts.length" style="display: flex; flex-wrap: wrap; gap: 8px;">
                         <v-chip
                             v-for="(product, index) in promotion.relatedProducts"
                             :key="product.productId"
@@ -140,7 +142,7 @@
 
                     <!-- Related Product Table -->
                     <v-data-table-virtual class="mb-8"
-                        v-if="promotion.promotionType=='RELATED'"
+                        v-if="promotion.promotionType=='Related Products'"
                         :items="filteredRelatedProducts"
                         :headers="headers"
                         item-value="productId"
@@ -172,9 +174,19 @@
                 </v-alert>
 
                 <!-- Submit Button -->
-                <v-btn color="primary" width="100%" size="large" variant="flat" @click="createPromotion">
-                    Create Promotion
-                </v-btn>
+                <v-row class="mt-2">
+                    <v-col cols="6"></v-col>
+                    <v-col cols="3">
+                        <v-btn regular color="error" width="100%" variant="flat" @click="closeForm">
+                            Cancel 
+                        </v-btn>
+                    </v-col>
+                    <v-col cols="3">
+                        <v-btn regular color="primary" width="100%" variant="flat" @click="createPromotion">
+                            Create
+                        </v-btn>
+                    </v-col>
+                </v-row>
             </v-card-text>
         </v-card>
     </v-container>
@@ -199,7 +211,7 @@ export default {
                 relatedProducts: [], // related products is an array of product objects
                 frequentShopperRequired: false,
             },
-            promotionTypes: ['DISCOUNT', 'GETFREE', 'RELATED'],
+            promotionTypes: ['% Discount', 'Get X Free', 'Related Products'],
             products: [], // To hold all products for search
             mainProductSearch: '', // For filtering main product
             relatedProductsSearch: '', // For filtering related products
@@ -238,6 +250,9 @@ export default {
         }
     },
     methods: {
+        closeForm() {
+            this.$emit('form-open', false)
+        },
         showSuccessAlert(message) {
             this.successMessage = message;
             // Set timeout to hide the alert after 3 seconds (3000 ms)
@@ -268,10 +283,21 @@ export default {
         },
         async createPromotion() {
             // Prepare the payload for the POST request
+            var promoType = ''
+            if (this.promotion.promotionType==='% Discount'){
+                promoType = "DISCOUNT"
+            }
+            else if (this.promotion.promotionType==='Get X Free'){
+                promoType = "GETFREE"
+            }
+            else if (this.promotion.promotionType==='Related Products'){
+                promoType = "RELATED"
+            }
+
             const payload = {
                 promotionName: this.promotion.promotionName,
                 promotionDescription: this.promotion.promotionDescription,
-                promotionType: this.promotion.promotionType,
+                promotionType: promoType,
                 validUntil: this.promotion.validUntil,
                 discountRate: this.promotion.discountRate,
                 freeQuantity: this.promotion.freeQuantity,
@@ -301,8 +327,9 @@ export default {
                 if (response.status==201) {
                     // Success message
                     this.showSuccessAlert("Promotion created successfully!");
-                    this.$emit('refresh');
                     this.clearForm();
+                    this.$emit('refresh-table');
+                    this.$emit('form-open', false)
                     return;
                 }
                 else{  

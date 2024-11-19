@@ -1,7 +1,7 @@
 <template>
     <v-row class="pa-4 align-center">
         <!-- Search Box -->
-        <v-col cols="12" sm="10">
+        <v-col cols="12" sm="8">
             <v-text-field
             variant="outlined"
             v-model="searchQuery"
@@ -10,6 +10,13 @@
             hide-details
             full-width
             ></v-text-field>
+        </v-col>
+
+        <v-col cols="4" md="2">
+            <v-btn color="secondary" class="ml-0" block @click="showCreateDialog">
+                <v-icon class="mr-2">mdi-plus</v-icon>
+                Create
+            </v-btn>
         </v-col>
     
         <!-- Delete Button -->
@@ -66,6 +73,10 @@
         </template>
         </v-data-table>
 
+        <v-dialog v-model="createDialogVisible" max-width="700px" max-height="500px">
+            <CreatePromotions @form-open="closeCreateDialog" @refresh-table="refreshTable"></CreatePromotions>
+        </v-dialog>
+
         <v-dialog v-model="dialogVisible" max-width="600px">
             <v-card>
             <v-card-title class="mx-2 d-flex justify-space-between align-center">
@@ -113,8 +124,13 @@
 </template>
     
     <script>
+import CreatePromotions from './CreatePromotions.vue';
+
     export default {
         name: "PromotionsTable",
+        components:{
+            CreatePromotions
+        },
         data() {
         return {
             promotions: [],
@@ -122,6 +138,7 @@
             searchQuery: '',
             successMessage: '',
             errorMessage: '',
+            createDialogVisible: false,
             dialogVisible: false, // Controls the visibility of the dialog
             selectedPromotion: {}, // Holds the promotion to be displayed in the dialog
         };
@@ -142,6 +159,16 @@
         await this.fetchPromotions();
         },
         methods: {
+        refreshTable(data){
+            this.fetchPromotions();
+            this.createDialogVisible = data;
+        },
+        closeCreateDialog(data){
+            this.createDialogVisible = data;
+        },
+        showCreateDialog(){
+            this.createDialogVisible = true;
+        },
         showDetails(promotion) {
             this.selectedPromotion = promotion; // Set the selected promotion details
             this.dialogVisible = true; // Show the dialog
