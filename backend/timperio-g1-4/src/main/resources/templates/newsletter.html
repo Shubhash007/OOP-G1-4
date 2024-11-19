@@ -1,0 +1,48 @@
+<body>
+    <div id="newsletter">
+        <p>Dear <span th:text="${customerName}">Customer Name</span>,</p>
+    <p>
+        We've curated something special for you! Based on your recent purchases and browsing history, here are
+        some exclusive offers and recommendations we think you'll love.
+    </p>
+    <h3>Top Picks for You:</h3>
+    <ul>
+        <li th:each='promotion : ${promotions}'>
+            <strong th:text="${promotion.getPromotionName()}">Promotion Name</strong><br/>
+            Description: <span th:text="${promotion.getPromotionDescription()}">Promotion Description</span><br/>
+            Type: <span th:text="${promotion.getPromotionType()}">Promotion Type</span><br/>
+            Valid Until: <span th:text="${promotion.getValidUntil()}">Valid Until Date</span><br/>
+            <div th:if="${promotion.discountRate != null }">
+                Discount Amount: <span th:text="${promotion.discountRate}">Discount Amount</span>
+            </div>
+            <div th:if="${promotion.freeQuantity != null }">
+                Free Quantity: <span th:text="${promotion.freeQuantity}">Free Quantity</span><br/>
+            </div>
+
+            <div th:if="${promotion.buyQuantity != null }">
+                Buy Quantity: <span th:text="${promotion.buyQuantity}">Buy Quantity</span>
+            </div>
+
+            Main Product Id: <span th:text="${promotion.mainProductId}"> Main Product Id</span><br>
+            Frequent Shopper Required: 
+            <span th:text="${promotion.frequentShopperRequired ? 'Yes' : 'No'}">Yes/No</span><br/> -->
+            <!-- Related Products:
+            <div th:if="!promotion.getRelatedProductIds().isEmpty()">
+                <ul>
+                    <li th:each="productId : ${promotion.getRelatedProductIds()}">
+                        <span th:text="${productId}">Product ID</span>
+                    </li>
+                </ul>
+            </div> -->
+            <hr/>
+        </li>
+    </ul>
+    <p>
+        Take advantage of these personalized offers and discover more with Timperio. Shop now and enjoy the
+        best deals tailored just for you!
+    </p>
+    <p>Warm regards,<br/>Marketing Team</p>
+</div>
+    
+</body>
+</html>

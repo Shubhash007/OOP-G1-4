@@ -2,6 +2,7 @@
   <v-app>
     <v-app-bar app>
       <v-row class="align-center">
+
         <v-col cols="auto">
         </v-col>
 
@@ -12,7 +13,6 @@
 
       </v-row>
     </v-app-bar>
-
     <v-navigation-drawer v-model="drawer" app permanent class="pt-1">
       <v-list nav dense>
 
@@ -32,6 +32,9 @@
 
         <v-list-item to="/newsletters" prepend-icon="mdi-email-newsletter" link class="p-6">
           <v-list-item-title>Newsleters</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/promotions" prepend-icon="mdi-currency-usd" link class="p-6">
+          <v-list-item-title>Promotions</v-list-item-title>
         </v-list-item>
 
         <v-list-item to="/profile" prepend-icon="mdi-account" link class="p-6">
@@ -58,11 +61,14 @@
 </template>
 
 <script>
+import timperioLogo from '@/assets/logo.png';
+
 export default {
   name: "Layout",
   data() {
     return {
       drawer: true,
+      logo: timperioLogo,
       isAdmin: false, // Initially set to false
     };
   },

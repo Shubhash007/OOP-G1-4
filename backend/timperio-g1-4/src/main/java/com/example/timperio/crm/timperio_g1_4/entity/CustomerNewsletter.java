@@ -17,34 +17,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "newsletters")
-public class Newsletter {
+@Table(name = "customers_newsletters")
+public class CustomerNewsletter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "newsletter_id")
+    @Column(name = "customer_newsletter_id")
     private Long id;
 
-    @Column(name = "newsletter_name", nullable = false, length = 100)
-    private String name;
-
-    @Column(name = "newsletter_description", nullable = false, length = 100)
-    private String description;
-
-    @Column(name = "newsletter_content", nullable = false, length = 100)
-    private String content;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private LocalDate createdAt;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer; // Links to Customer entity
 
     @ManyToOne
-    @JoinColumn(name = "newsletter_template_id")
-    private NewsletterTemplate newsletterTemplate;
+    @JoinColumn(name = "newsletter_id", nullable = false)
+    private Newsletter newsletter; // Links to Newsletter entity
+
+    @Column(name = "send_success", nullable = false)
+    private boolean sendSuccess;
+
+    @CreationTimestamp
+    @Column(name = "send_date", nullable = false)
+    private LocalDate sendDate;
 }

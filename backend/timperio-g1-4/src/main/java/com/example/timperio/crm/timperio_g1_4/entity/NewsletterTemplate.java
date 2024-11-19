@@ -37,7 +37,7 @@ public class NewsletterTemplate {
     @Column(name = "template_description", nullable = false)
     private String description;
 
-    @Column(name = "template_content", nullable = false)
+    @Column(name = "template_content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @CreationTimestamp

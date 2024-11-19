@@ -4,6 +4,4 @@
     </v-container>
 </template>
 
-<script>
-
-</script>
+<script></script>
