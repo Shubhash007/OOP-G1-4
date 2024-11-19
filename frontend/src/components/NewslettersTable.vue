@@ -39,13 +39,16 @@
           </v-btn>
         </v-col>
       </v-row>
-
+      <v-alert v-if="Msg" type="success" class="mt-4" dense>
+      {{ Msg }}
+    </v-alert>
       <v-data-table :items="templates" show-select items-per-page="10" select-strategy="single"
         v-model="selectedTemplate">
         <template v-slot:[`item.content`]="{ item }">
           {{ item.content.length > 100 ? item.content.substring(0, 100) + '...' : item.content }}
         </template>
       </v-data-table>
+      
     </v-tab-item>
 
     <!-- Newsletters Tab -->
@@ -327,7 +330,7 @@ export default {
       selected: [],
       searchQuery: '',
       successMessage: '',
-      errorMessage: '',
+      Msg: '',
       dialogVisible: false, // Controls the visibility of the dialog
       selectedPromotion: {}, // Holds the promotion to be displayed in the dialog
     };
@@ -610,8 +613,9 @@ export default {
 
         if (response.ok) {
           const result = await response.text();
-          this.$emit('show-notification', 'Newsletter sent successfully');
           this.showSendDialog = false;
+          this.Msg = "Newsletter sent successfully";
+
         } else {
           const errorText = await response.text();
           console.error("Error sending newsletter:", errorText);
