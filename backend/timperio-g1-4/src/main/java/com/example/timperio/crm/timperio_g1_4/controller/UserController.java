@@ -129,9 +129,9 @@ public class UserController {
 
     @DeleteMapping("/admin/delete-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
+    public ResponseEntity<String> deleteUser(@RequestParam String username) {
         try {
-            Boolean deleted = userService.deleteUser(userId);
+            Boolean deleted = userService.deleteUser(username);
             return deleted ? new ResponseEntity<String>("User deleted successfully", HttpStatus.OK)
                     : new ResponseEntity<String>("User deletion failed", HttpStatus.BAD_REQUEST);
         } catch (UsernameNotFoundException e) {
