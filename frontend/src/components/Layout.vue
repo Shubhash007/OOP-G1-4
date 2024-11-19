@@ -26,7 +26,7 @@
           <v-list-item-title>Analytics</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/marketing" prepend-icon="mdi-account-multiple" link class="p-6">
+        <v-list-item v-if="isMarketing" to="/marketing" prepend-icon="mdi-account-multiple" link class="p-6">
           <v-list-item-title>Marketing</v-list-item-title>
         </v-list-item>
 
@@ -70,6 +70,8 @@ export default {
       drawer: true,
       logo: timperioLogo,
       isAdmin: false, // Initially set to false
+      isMarketing: false, // Initially set to false
+      isSales: false, // Initially set to false
     };
   },
   methods: {
@@ -98,6 +100,9 @@ export default {
             const user = await response.json();
             const userRole = user.role; // Assuming the role is in the user object
             this.isAdmin = userRole === 'ROLE_ADMIN';
+            this.isMarketing = userRole === 'ROLE_MARKETING';
+            this.isSales = userRole === 'ROLE_SALES';
+
           } else {
             console.error("Failed to fetch user data");
             this.isAdmin = false; // Default to false if the API call fails
