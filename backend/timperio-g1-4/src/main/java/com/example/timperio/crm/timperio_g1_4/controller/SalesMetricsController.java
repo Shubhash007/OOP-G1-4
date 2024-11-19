@@ -14,12 +14,13 @@ import com.example.timperio.crm.timperio_g1_4.entity.SalesMetrics;
 import com.example.timperio.crm.timperio_g1_4.service.impl.SalesMetricsServiceImpl;
 
 @RestController
+@PreAuthorize("hasRole('ROLE_SALES')")
 @RequestMapping("/sales-metrics")
 public class SalesMetricsController {
     @Autowired
     private SalesMetricsServiceImpl salesMetricsService;
 
-    @GetMapping("/")
+    @GetMapping("/get")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getSalesMetrics(boolean individual, Optional<Long> customerId)
             throws IllegalArgumentException {
