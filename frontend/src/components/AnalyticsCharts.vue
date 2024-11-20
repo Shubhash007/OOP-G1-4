@@ -1,6 +1,11 @@
 <template>
   <v-row>
     <v-col cols="12" sm="6" md="2">
+      <v-text-field v-model="customerId" variant="outlined" label="Customer ID"
+        prepend-inner-icon="mdi-magnify"></v-text-field>
+    </v-col>
+
+    <v-col cols="12" sm="6" md="2">
       <v-select label="Sale Type" v-model="saleType" variant="outlined" :items="filters" chips></v-select>
     </v-col>
     <v-col cols="12" sm="6" md="4">
@@ -244,7 +249,7 @@ export default {
     createChart(refName, labels, data, label, borderColor) {
       const ctx = this.$refs[refName].getContext("2d");
       const canvas = this.$refs[refName];
-  canvas.style.height = "250px"; // Fixed height (adjust as needed)
+      canvas.style.height = "250px"; // Fixed height (adjust as needed)
       return new Chart(ctx, {
         type: "line",
         data: {
@@ -294,7 +299,7 @@ export default {
 
     createPieChart(refName, labels, data, label) {
       const canvas = this.$refs[refName];
-  canvas.style.height = "250px"; // Fixed height (adjust as needed)
+      canvas.style.height = "250px"; // Fixed height (adjust as needed)
       const ctx = canvas.getContext("2d");
 
       return new Chart(ctx, {
@@ -399,7 +404,9 @@ export default {
 
 <style scoped>
 .chart-canvas {
-  height: 300px; /* Fixed height */
-  width: 100%; /* Maintain responsive width */
+  height: 300px;
+  /* Fixed height */
+  width: 100%;
+  /* Maintain responsive width */
 }
 </style>
