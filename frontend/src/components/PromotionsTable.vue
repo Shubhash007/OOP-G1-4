@@ -206,7 +206,7 @@ import CreatePromotions from './CreatePromotions.vue';
             const token = localStorage.getItem("jwt_token");
     
             try {
-            const response = await fetch("http://localhost:8080/sales/promotions", {
+            const response = await fetch("http://localhost:8080/promotions/get-all", {
                 method: "GET",
                 headers: {
                 Authorization: `Bearer ${token}`,
@@ -233,7 +233,7 @@ import CreatePromotions from './CreatePromotions.vue';
 
                 if (confirmDelete) {
                 try {
-                    const response = await fetch(`http://localhost:8080/sales/promotions`, {
+                    const response = await fetch(`http://localhost:8080/promotions/delete`, {
                     method: "DELETE",
                     headers: {
                         Authorization: `Bearer ${token}`,

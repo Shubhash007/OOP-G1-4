@@ -88,7 +88,7 @@ export default {
       const token = localStorage.getItem("jwt_token");
 
       try {
-        const response = await fetch("http://localhost:8080/auth/users/get-user", {
+        const response = await fetch("http://localhost:8080/users/get-user", {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -119,7 +119,7 @@ export default {
       const token = localStorage.getItem("jwt_token");
 
       // Step 1: Verify the current password via the login endpoint
-      const loginResponse = await fetch("http://localhost:8080/auth/login", {
+      const loginResponse = await fetch("http://localhost:8080/users/login", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -140,7 +140,7 @@ export default {
 
       // Step 2: If login is successful, proceed to password update
       try {
-        const response = await fetch("http://localhost:8080/auth/users/update-password", {
+        const response = await fetch("http://localhost:8080/users/update-password", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,

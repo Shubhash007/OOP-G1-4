@@ -59,7 +59,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (jwtToken) {
     try {
-      const response = await fetch("http://localhost:8080/auth/users/get-user", {
+      const response = await fetch("http://localhost:8080/users/get-user", {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${jwtToken}`,

@@ -139,7 +139,7 @@ export default {
       const token = localStorage.getItem("jwt_token");
 
       try {
-        const response = await fetch("http://localhost:8080/auth/admin/getAllUsers", {
+        const response = await fetch("http://localhost:8080/users/admin/get-all-users", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -188,7 +188,7 @@ export default {
       console.log("Payload:", payload);
 
       try {
-        const response = await fetch("http://localhost:8080/auth/admin/updateUser", {
+        const response = await fetch("http://localhost:8080/users/admin/update-user", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -218,7 +218,7 @@ export default {
       const token = localStorage.getItem("jwt_token");
 
       try {
-        const response = await fetch("http://localhost:8080/auth/admin/createUser", {
+        const response = await fetch("http://localhost:8080/users/admin/create-user", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -264,7 +264,7 @@ export default {
       }
 
       try {
-        const response = await fetch(`http://localhost:8080/auth/admin/deleteUser?username=${payload.username}`, {
+        const response = await fetch(`http://localhost:8080/users/admin/delete-user?username=${payload.username}`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

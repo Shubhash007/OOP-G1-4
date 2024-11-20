@@ -16,13 +16,13 @@
     <v-navigation-drawer v-model="drawer" app permanent class="pt-1">
       <v-list nav dense>
 
-        <v-list-item to="/purchaseHistory" prepend-icon="mdi-history" link class="p-6">
+        <v-list-item  v-if="!isAdmin" to="/purchaseHistory" prepend-icon="mdi-history" link class="p-6">
           <v-list-item-title>Purchase History</v-list-item-title>
         </v-list-item>
 
 
 
-        <v-list-item to="/analytics" prepend-icon="mdi-chart-bar" link class="p-6">
+        <v-list-item v-if="!isAdmin" to="/analytics" prepend-icon="mdi-chart-bar" link class="p-6">
           <v-list-item-title>Analytics</v-list-item-title>
         </v-list-item>
 
@@ -88,7 +88,7 @@ export default {
       if (jwtToken) {
         try {
           // Make the API call to get the user details
-          const response = await fetch("http://localhost:8080/auth/users/get-user", {
+          const response = await fetch("http://localhost:8080/users/get-user", {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${jwtToken}`,

@@ -437,11 +437,26 @@ export default {
       this.showDialog = false;
     },
     async fetchTemplates() {
-      const response = await fetch("http://localhost:8080/newsletters/templates");
+      const jwtToken = localStorage.getItem("jwt_token"); // Assuming the JWT token is stored in localStorage
+
+      const response = await fetch("http://localhost:8080/newsletters/get-all-templates", {
+        headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${jwtToken}`,
+            },
+      });
       this.templates = await response.json();
+      console.log(this.templates)
     },
     async fetchNewsletters() {
-      const response = await fetch("http://localhost:8080/newsletters");
+      const jwtToken = localStorage.getItem("jwt_token"); // Assuming the JWT token is stored in localStorage
+
+      const response = await fetch("http://localhost:8080/newsletters/get-all",{
+        headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${jwtToken}`,
+            },
+      });
       this.newsletters = await response.json();
     },
 
@@ -451,20 +466,13 @@ export default {
         return;
       }
       this.errorMessage = "";
+      const jwtToken = localStorage.getItem("jwt_token"); // Assuming the JWT token is stored in localStorage
 
       try {
         const jwtToken = localStorage.getItem("jwt_token"); // Assuming the JWT token is stored in localStorage
 
-        const response = this.isEditMode
-          ? await fetch(`http://localhost:8080/newsletters/templates/${this.currentItem.id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${jwtToken}`,
-            },
-            body: JSON.stringify(this.currentItem),
-          })
-          : await fetch("http://localhost:8080/newsletters/templates", {
+        const response = 
+          await fetch("http://localhost:8080/newsletters/create-template", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -493,10 +501,12 @@ export default {
       this.showSendDialog = true;
     },
     async fetchCustomerData(segmentationType) {
+      const jwtToken = localStorage.getItem("jwt_token"); // Assuming the JWT token is stored in localStorage
+
       const endpointMap = {
-        recency: "segmentation-recency",
-        frequency: "segmentation-frequency",
-        spending: "segmentation-spending",
+        recency: "segmentation/recency",
+        frequency: "segmentation/frequency",
+        spending: "segmentation/spending",
       };
       const endpoint = endpointMap[segmentationType];
       const token = localStorage.getItem("jwt_token");
@@ -551,7 +561,7 @@ export default {
       const token = localStorage.getItem("jwt_token");
 
       try {
-        const response = await fetch("http://localhost:8080/sales/promotions", {
+        const response = await fetch("http://localhost:8080/promotions/get-all", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -586,6 +596,7 @@ export default {
 
 
     async sendNewsletter() {
+      
       if (!this.selectedTemplate || this.selectedIds.length === 0) {
         this.errorMessage = "Please select a template and at least one recipient.";
         return;
@@ -607,6 +618,8 @@ export default {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+
           },
           body: JSON.stringify(payload),
         });

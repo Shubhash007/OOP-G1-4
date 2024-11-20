@@ -228,7 +228,7 @@ export default {
         try {
             const token = localStorage.getItem("jwt_token");  // Retrieve the JWT token from localStorage
 
-            const response = await fetch("http://localhost:8080/products", {
+            const response = await fetch("http://localhost:8080/products/get-all", {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,  // Include the Authorization header with the token
@@ -313,7 +313,7 @@ export default {
                 const token = localStorage.getItem("jwt_token");  // Retrieve the JWT token from localStorage
 
                 // Send POST request to create promotion
-                const response = await fetch("http://localhost:8080/sales/promotions", {
+                const response = await fetch("http://localhost:8080/promotions/create-update", {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,  // Include the Authorization header with the token

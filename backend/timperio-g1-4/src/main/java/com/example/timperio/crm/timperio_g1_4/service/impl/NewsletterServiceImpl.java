@@ -39,11 +39,10 @@ import jakarta.mail.internet.MimeMessage;
 public class NewsletterServiceImpl implements NewsletterService {
 
     private static final Dotenv dotenv = Dotenv
-                                        .load();
+            .load();
 
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
-
 
     public NewsletterServiceImpl(JavaMailSender mailSender, SpringTemplateEngine templateEngine) {
         this.mailSender = mailSender;
@@ -125,7 +124,7 @@ public class NewsletterServiceImpl implements NewsletterService {
     }
 
     @Override
-    public NewsletterTemplateDto getTemplateById(Long templateId) throws NoSuchElementException{
+    public NewsletterTemplateDto getTemplateById(Long templateId) throws NoSuchElementException {
         NewsletterTemplate template = templateRepository.findById(templateId)
                 .orElseThrow(() -> new NoSuchElementException("Template not found"));
         return convertTemplateToDto(template);
@@ -168,41 +167,39 @@ public class NewsletterServiceImpl implements NewsletterService {
                 .map(this::convertCustomerNewsletterToDto)
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public List<CustomerNewsletterDto> getCustomersForNewsletter(Long newsletterId) {
         return customerNewsletterRepository.findByNewsletter_Id(newsletterId).stream()
                 .map(this::convertCustomerNewsletterToDto)
                 .collect(Collectors.toList());
     }
-    
 
     // ------------------ Newsletter Sending ------------------
     @Override
-    public void sendNewsletter(ProcessNewsletterDto processNewsletterDto) throws Exception{
+    public void sendNewsletter(ProcessNewsletterDto processNewsletterDto) throws Exception {
         // Placeholder for sending logic.
         // Customer customer = customerRepository.findById(customerNewsletterDto.getCustomerId().longValue())
         //         .orElseThrow(() -> new NoSuchElementException("Customer not found"));
         final List<Long> customers = processNewsletterDto.getCustomers();
-        final Long newsletterTemplateId =  processNewsletterDto.getNewsletterTemplate();
+        final Long newsletterTemplateId = processNewsletterDto.getNewsletterTemplate();
         final List<Long> promotionIds = processNewsletterDto.getPromotions();
 
-        NewsletterTemplate newsletterTemplate = templateRepository.findById((long)newsletterTemplateId)
+        NewsletterTemplate newsletterTemplate = templateRepository.findById((long) newsletterTemplateId)
                 .orElseThrow(() -> new NoSuchElementException("Newsletter template not found"));
         System.out.println("Sending newsletter to customer...");
 
         ArrayList<PromotionDto> promotions = new ArrayList<>();
         for (Long promotionId : promotionIds) {
-            Promotion promotion = promotionRepository.findById((long)promotionId)
-                .orElseThrow(() -> new NoSuchElementException("Promotion not found"));
+            Promotion promotion = promotionRepository.findById((long) promotionId)
+                    .orElseThrow(() -> new NoSuchElementException("Promotion not found"));
             promotions.add(mapToPromotionDto(promotion));
         }
-        
+
         //  ------------------- Thymeleaf Template Engine -------------------
         Context context = new Context();
         context.setVariable("customerName", "Bob");
         context.setVariable("promotions", promotions);
-
 
         String templateContent = newsletterTemplate.getContent();
         templateContent = templateContent.replace("\\${", "${");
@@ -210,24 +207,23 @@ public class NewsletterServiceImpl implements NewsletterService {
 
         String htmlContent = templateEngine.process(templateContent, context);
 
-
         customerRepository.findAllById(customers).forEach(customer -> {
-            
-            if (customer.getEmail() != null){
+
+            if (customer.getEmail() != null) {
                 try {
                     MimeMessage mimeMessage = mailSender.createMimeMessage();
                     MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-        
+
                     helper.setFrom(dotenv.get("MAIL_USERNAME"), "Dennis");
-                    helper.setTo("dennis18hardianto@gmail.com");
-        
+                    helper.setTo(customer.getEmail());
+
                     helper.setSubject("Test");
                     helper.setText(htmlContent, true);
-        
+
                     mailSender.send(mimeMessage);
                     // Implement actual sending logic here
-                    
-                } catch ( MessagingException | UnsupportedEncodingException e) {
+
+                } catch (MessagingException | UnsupportedEncodingException e) {
                     throw new RuntimeException(e.getMessage());
                 }
             }
@@ -236,7 +232,6 @@ public class NewsletterServiceImpl implements NewsletterService {
     }
 
     // ------------------ Helper Converters ------------------
-
     private NewsletterDto convertNewsletterToDto(Newsletter newsletter) {
         NewsletterDto dto = new NewsletterDto();
         dto.setId(newsletter.getId());
@@ -294,14 +289,13 @@ public class NewsletterServiceImpl implements NewsletterService {
         // Set related product ids
         if (promotion.getRelatedProducts() != null) {
             promotionDto.setRelatedProductIds(
-                promotion.getRelatedProducts().stream()
-                    .map(product -> product.getProductId())
-                    .collect(Collectors.toList())
+                    promotion.getRelatedProducts().stream()
+                            .map(product -> product.getProductId())
+                            .collect(Collectors.toList())
             );
         }
 
         return promotionDto;
     }
 
-    
 }

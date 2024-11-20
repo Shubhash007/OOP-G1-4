@@ -132,9 +132,9 @@ export default {
   methods: {
     async fetchCustomerData(segmentationType) {
       const endpointMap = {
-        recency: "segmentation-recency",
-        frequency: "segmentation-frequency",
-        spending: "segmentation-spending",
+        recency: "segmentation/recency",
+        frequency: "segmentation/frequency",
+        spending: "segmentation/spending",
       };
       const endpoint = endpointMap[segmentationType];
 

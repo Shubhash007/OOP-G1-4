@@ -217,7 +217,7 @@ export default {
             const token = localStorage.getItem("jwt_token");
 
             try {
-                const response = await fetch("http://localhost:8080/purchase-history/all", {
+                const response = await fetch("http://localhost:8080/purchase-history/get-all", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
