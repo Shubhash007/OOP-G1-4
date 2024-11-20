@@ -64,7 +64,7 @@
 
                     <!-- Free Quantity -->
                     <v-text-field
-                        v-if="promotion.promotionType=='GETFREE'"
+                        v-if="promotion.promotionType=='Get X Free'"
                         v-model="promotion.freeQuantity"
                         label="Free Quantity"
                         type="number"
