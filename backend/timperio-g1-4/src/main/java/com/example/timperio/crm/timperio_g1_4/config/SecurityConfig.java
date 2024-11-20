@@ -40,16 +40,14 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/login")
-                        .permitAll()
-                        .requestMatchers("/users/admin/**", "/customer/all", "/newsletters/create-template")
-                        .hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/users/admin/**", "/customer/**", "/newsletters/create", "/newsletters/send",
+                        .requestMatchers("/users/login").permitAll()
+                        .requestMatchers("/customer/create", "/customer/update", "/customer/delete",
                                 "/purchase-history/**")
+                        .hasAnyAuthority("ROLE_MARKETING", "ROLE_SALES")
+                        .requestMatchers("/newsletters/create-template", "/users/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/customer/segmentation/**", "/newsletters/create", "/newsletters/send")
                         .hasAuthority("ROLE_MARKETING")
-                        .requestMatchers("/users/admin/**/", "/customer/create", "/customer/update", "/customer/delete",
-                                "/purchase-history/**", "/sales-metrics/**")
-                        .hasAuthority("ROLE_SALES")
+                        .requestMatchers("/sales-metrics/get").hasAuthority("ROLE_SALES")
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

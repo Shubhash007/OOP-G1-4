@@ -28,13 +28,13 @@ public class PurchaseHistoryController {
     private PurchaseHistoryServiceImpl purchaseHistoryService;
 
     @GetMapping("/get-all")
-    @PreAuthorize("hasRole('ROLE_SALES'), hasRole('ROLE_MARKETING')")
+    @PreAuthorize("hasRole('ROLE_SALES') or hasRole('ROLE_MARKETING')")
     public ResponseEntity<List<SaleDto>> getAllPurchaseHistory() {
         return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.getAllPurchaseHistory(), HttpStatus.OK);
     }
 
     @PostMapping("/filter")
-    @PreAuthorize("hasRole('ROLE_SALES'), hasRole('ROLE_MARKETING')")
+    @PreAuthorize("hasRole('ROLE_SALES') or hasRole('ROLE_MARKETING')")
     public ResponseEntity<?> filterPurchaseHistory(@RequestBody FilterRequest filterRequest) throws Exception {
         try {
             return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.filterPurchaseHistory(filterRequest),
@@ -45,7 +45,7 @@ public class PurchaseHistoryController {
     }
 
     @PostMapping("/export-csv")
-    @PreAuthorize("hasRole('ROLE_SALES'), hasRole('ROLE_MARKETING')")
+    @PreAuthorize("hasRole('ROLE_SALES') or hasRole('ROLE_MARKETING')")
     public void exportToCSV(@RequestBody FilterRequest filterRequest, HttpServletResponse response)
             throws IOException, Exception {
         List<SaleDto> purchaseHistoryList;
