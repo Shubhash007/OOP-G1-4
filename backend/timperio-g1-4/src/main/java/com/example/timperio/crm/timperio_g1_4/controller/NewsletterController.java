@@ -1,7 +1,9 @@
 package com.example.timperio.crm.timperio_g1_4.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,51 +31,82 @@ public class NewsletterController {
 
     @PostMapping("/create-template")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<NewsletterTemplateDto> createTemplate(@RequestBody NewsletterTemplateDto templateDto) {
-        NewsletterTemplateDto createdTemplate = newsletterService.createTemplate(templateDto);
-        return ResponseEntity.ok(createdTemplate);
+    public ResponseEntity<?> createTemplate(@RequestBody NewsletterTemplateDto templateDto)
+            throws IllegalArgumentException, Exception {
+        try {
+            NewsletterTemplateDto createdTemplate = newsletterService.createTemplate(templateDto);
+            return new ResponseEntity<>(createdTemplate, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/get-all-templates")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<NewsletterTemplateDto>> getAllTemplates() {
-        return ResponseEntity.ok(newsletterService.getAllTemplates());
+    public ResponseEntity<?> getAllTemplates() {
+        try {
+            return new ResponseEntity<>(newsletterService.getAllTemplates(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/get-template/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<NewsletterTemplateDto> getTemplateById(@PathVariable Long id) {
-        return ResponseEntity.ok(newsletterService.getTemplateById(id));
+    public ResponseEntity<?> getTemplateById(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(newsletterService.getTemplateById(id), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("Template with inputted ID not found.", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_MARKETING')")
-    public ResponseEntity<NewsletterDto> createNewsletter(@RequestBody NewsletterDto newsletterDto) {
-        return ResponseEntity.ok(newsletterService.createNewsletter(newsletterDto));
+    public ResponseEntity<?> createNewsletter(@RequestBody NewsletterDto newsletterDto) {
+        try {
+            return new ResponseEntity<>(newsletterService.createNewsletter(newsletterDto), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/get-all")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<NewsletterDto>> getAllNewsletters() {
-        return ResponseEntity.ok(newsletterService.getAllNewsletters());
+    public ResponseEntity<?> getAllNewsletters() {
+        try {
+            return new ResponseEntity<>(newsletterService.getAllNewsletters(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/get/{id:\\d+}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<NewsletterDto> getNewsletterById(@PathVariable Long id) {
-        return ResponseEntity.ok(newsletterService.getNewsletterById(id));
+    public ResponseEntity<?> getNewsletterById(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(newsletterService.getNewsletterById(id), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("Newsletter with inputted ID not found.", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/send")
     @PreAuthorize("hasRole('ROLE_MARKETING')")
     public ResponseEntity<String> sendNewsletter(@RequestBody ProcessNewsletterDto processNewsletterDto) {
-        try{
+        try {
             newsletterService.sendNewsletter(processNewsletterDto);
             return ResponseEntity.ok("Newsletter sent successfully");
-        } catch (Exception e) { 
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error sending newsletter: " + e.getMessage());
         }
-        
-        
+
     }
 }
