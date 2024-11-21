@@ -1,6 +1,7 @@
 package com.example.timperio.crm.timperio_g1_4.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,29 +28,41 @@ public class PromotionController {
     // endpoint to create or update promotion
     @PostMapping("/create-update")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PromotionDto> createOrUpdatePromotion(@RequestBody PromotionDto promotionDto) {
-        PromotionDto savedPromotion = promotionService.createOrUpdatePromotion(promotionDto);
-        return new ResponseEntity<>(savedPromotion, HttpStatus.CREATED);
+    public ResponseEntity<?> createOrUpdatePromotion(@RequestBody PromotionDto promotionDto) {
+        try {
+            PromotionDto savedPromotion = promotionService.createOrUpdatePromotion(promotionDto);
+            return new ResponseEntity<>(savedPromotion, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     // endpoint to get all promotions
     @GetMapping("/get-all")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<PromotionDto>> getAllPromotions() {
-        List<PromotionDto> promotions = promotionService.getAllPromotions();
-        return new ResponseEntity<>(promotions, HttpStatus.OK);
+    public ResponseEntity<?> getAllPromotions() {
+        try {
+            List<PromotionDto> promotions = promotionService.getAllPromotions();
+            return new ResponseEntity<>(promotions, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // endpoint to get a specific promotion by ID
     @GetMapping("/get/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PromotionDto> getPromotionById(@PathVariable Long id) {
-        // assuming a method in service that returns a promotion by id
-        PromotionDto promotionDto = promotionService.getPromotionById(id);
-        if (promotionDto != null) {
+    public ResponseEntity<?> getPromotionById(@PathVariable Long id) {
+        try {
+            PromotionDto promotionDto = promotionService.getPromotionById(id);
             return new ResponseEntity<>(promotionDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("Promotion not found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
