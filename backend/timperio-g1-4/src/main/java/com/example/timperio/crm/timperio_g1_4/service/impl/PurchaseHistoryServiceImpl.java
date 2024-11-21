@@ -24,13 +24,19 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
     @Autowired
     private SaleRepository saleRepository;
 
-    public List<SaleDto> getAllPurchaseHistory() {
-        List<Sale> saleList = saleRepository.findAll();
+    public List<SaleDto> getAllPurchaseHistory() throws Exception {
+        try {
+            List<Sale> saleList = saleRepository.findAll();
 
-        // Map Sales entities to SaleDTOs
-        List<SaleDto> saleDtoList = saleList.stream().map(sale -> SaleMapper.mapToSaleDto(sale))
-                .collect(Collectors.toList());
-        return saleDtoList;
+            // Map Sales entities to SaleDTOs
+            List<SaleDto> saleDtoList = saleList.stream().map(sale -> SaleMapper.mapToSaleDto(sale))
+                    .collect(Collectors.toList());
+            return saleDtoList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("An internal error has occured.");
+        }
+
     }
 
     public List<SaleDto> filterPurchaseHistory(FilterRequest filterRequest) throws Exception {

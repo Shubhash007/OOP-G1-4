@@ -29,8 +29,12 @@ public class PurchaseHistoryController {
 
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ROLE_SALES') or hasRole('ROLE_MARKETING')")
-    public ResponseEntity<List<SaleDto>> getAllPurchaseHistory() {
-        return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.getAllPurchaseHistory(), HttpStatus.OK);
+    public ResponseEntity<?> getAllPurchaseHistory() {
+        try {
+            return new ResponseEntity<List<SaleDto>>(purchaseHistoryService.getAllPurchaseHistory(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/filter")
@@ -61,6 +65,10 @@ public class PurchaseHistoryController {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=sales_data.csv");
 
         // Write CSV to response output stream
-        PurchaseHistoryCSVExporter.exportToCSV(response.getWriter(), purchaseHistoryList);
+        try {
+            PurchaseHistoryCSVExporter.exportToCSV(response.getWriter(), purchaseHistoryList);
+        } catch (IOException e) {
+            throw new IOException("Error writing CSV to response output stream.");
+        }
     }
 }
