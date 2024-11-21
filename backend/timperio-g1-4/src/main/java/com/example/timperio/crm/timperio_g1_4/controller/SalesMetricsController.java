@@ -27,16 +27,13 @@ public class SalesMetricsController {
         // individual should be true if we want to get the sales metrics for a specific
         // customer
         try {
-            if (individual && !customerId.isPresent()) {
-                throw new IllegalArgumentException("customerId must be provided if individual is true");
-            } else if (!individual && customerId.isPresent()) {
-                throw new IllegalArgumentException("customerId must not be provided if individual is false");
-            }
             return new ResponseEntity<SalesMetrics>(
                     salesMetricsService.getSalesMetrics(individual, customerId),
                     HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
