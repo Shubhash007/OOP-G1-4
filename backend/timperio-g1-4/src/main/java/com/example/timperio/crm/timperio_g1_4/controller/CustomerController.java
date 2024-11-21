@@ -48,7 +48,7 @@ public class CustomerController {
             Customer createdCustomer = customerService.createCustomer(customerDto);
             return new ResponseEntity<>(createdCustomer, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("An internal error has occured.",
+            return new ResponseEntity<>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -77,7 +77,7 @@ public class CustomerController {
             return new ResponseEntity<>("Customer with id " + customerId + " has been deleted.",
                     HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("An internal error has occured.",
+            return new ResponseEntity<>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -89,7 +89,7 @@ public class CustomerController {
             HashMap<String, List<CustomerDto>> customerList = customerService.getCustomerListByRecency();
             return new ResponseEntity<>(customerList, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("An internal error has occured.",
+            return new ResponseEntity<>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -101,7 +101,7 @@ public class CustomerController {
             HashMap<String, List<CustomerDto>> customerList = customerService.getCustomerListByFrequency();
             return new ResponseEntity<>(customerList, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("An internal error has occured.",
+            return new ResponseEntity<>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -113,7 +113,7 @@ public class CustomerController {
             HashMap<String, List<CustomerDto>> customerList = customerService.getCustomerListBySpending();
             return new ResponseEntity<>(customerList, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("An internal error has occured.",
+            return new ResponseEntity<>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
