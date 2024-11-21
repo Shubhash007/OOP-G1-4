@@ -69,33 +69,54 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     // ------------------ Newsletter Operations ------------------
     @Override
-    public NewsletterDto createNewsletter(NewsletterDto newsletterDto) {
-        NewsletterTemplate template = templateRepository.findById(newsletterDto.getTemplateId())
-                .orElseThrow(() -> new NoSuchElementException("Template not found"));
+    public NewsletterDto createNewsletter(NewsletterDto newsletterDto) throws NoSuchElementException, Exception {
+        try {
+            NewsletterTemplate template = templateRepository.findById(newsletterDto.getTemplateId())
+                    .orElseThrow(() -> new NoSuchElementException("Template not found"));
 
-        Newsletter newsletter = new Newsletter();
-        newsletter.setName(newsletterDto.getName());
-        newsletter.setDescription(newsletterDto.getDescription());
-        newsletter.setContent(newsletterDto.getContent());
-        // newsletter.setCreatedAt(newsletterDto.getCreatedAt());
-        newsletter.setNewsletterTemplate(template);
+            Newsletter newsletter = new Newsletter();
+            newsletter.setName(newsletterDto.getName());
+            newsletter.setDescription(newsletterDto.getDescription());
+            newsletter.setContent(newsletterDto.getContent());
+            // newsletter.setCreatedAt(newsletterDto.getCreatedAt());
+            newsletter.setNewsletterTemplate(template);
 
-        Newsletter savedNewsletter = newsletterRepository.save(newsletter);
-        return convertNewsletterToDto(savedNewsletter);
+            Newsletter savedNewsletter = newsletterRepository.save(newsletter);
+            return convertNewsletterToDto(savedNewsletter);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Template with inputted ID not found.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Error creating newsletter");
+        }
+
     }
 
     @Override
     public List<NewsletterDto> getAllNewsletters() {
-        return newsletterRepository.findAll().stream()
-                .map(this::convertNewsletterToDto)
-                .collect(Collectors.toList());
+        try {
+            return newsletterRepository.findAll().stream()
+                    .map(this::convertNewsletterToDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new NoSuchElementException("An internal error has occured.");
+        }
     }
 
     @Override
-    public NewsletterDto getNewsletterById(Long newsletterId) {
-        Newsletter newsletter = newsletterRepository.findById(newsletterId)
-                .orElseThrow(() -> new NoSuchElementException("Newsletter not found"));
-        return convertNewsletterToDto(newsletter);
+    public NewsletterDto getNewsletterById(Long newsletterId) throws NoSuchElementException, Exception {
+        try {
+            Newsletter newsletter = newsletterRepository.findById(newsletterId)
+                    .orElseThrow(() -> new NoSuchElementException("Newsletter not found"));
+            return convertNewsletterToDto(newsletter);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Newsletter not found");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("An internal error has occured.");
+        }
+
     }
 
     @Override
@@ -105,29 +126,49 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     // ------------------ Template Operations ------------------
     @Override
-    public NewsletterTemplateDto createTemplate(NewsletterTemplateDto templateDto) {
-        NewsletterTemplate template = new NewsletterTemplate();
-        template.setName(templateDto.getName());
-        template.setDescription(templateDto.getDescription());
-        template.setContent(templateDto.getContent());
-        // template.setCreatedAt(templateDto.getCreatedAt());
+    public NewsletterTemplateDto createTemplate(NewsletterTemplateDto templateDto)
+            throws IllegalArgumentException, Exception {
+        try {
+            NewsletterTemplate template = new NewsletterTemplate();
+            template.setName(templateDto.getName());
+            template.setDescription(templateDto.getDescription());
+            template.setContent(templateDto.getContent());
+            // template.setCreatedAt(templateDto.getCreatedAt());
 
-        NewsletterTemplate savedTemplate = templateRepository.save(template);
-        return convertTemplateToDto(savedTemplate);
+            NewsletterTemplate savedTemplate = templateRepository.save(template);
+            return convertTemplateToDto(savedTemplate);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid template data");
+        } catch (Exception e) {
+            throw new Exception("Error creating template");
+        }
     }
 
     @Override
-    public List<NewsletterTemplateDto> getAllTemplates() {
-        return templateRepository.findAll().stream()
-                .map(this::convertTemplateToDto)
-                .collect(Collectors.toList());
+    public List<NewsletterTemplateDto> getAllTemplates() throws Exception {
+        try {
+            return templateRepository.findAll().stream()
+                    .map(this::convertTemplateToDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("An internal error has occured.");
+        }
     }
 
     @Override
-    public NewsletterTemplateDto getTemplateById(Long templateId) throws NoSuchElementException {
-        NewsletterTemplate template = templateRepository.findById(templateId)
-                .orElseThrow(() -> new NoSuchElementException("Template not found"));
-        return convertTemplateToDto(template);
+    public NewsletterTemplateDto getTemplateById(Long templateId) throws NoSuchElementException, Exception {
+        try {
+            NewsletterTemplate template = templateRepository.findById(templateId)
+                    .orElseThrow(() -> new NoSuchElementException("Template not found"));
+            return convertTemplateToDto(template);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Template not found");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("An internal error has occured.");
+        }
+
     }
 
     @Override

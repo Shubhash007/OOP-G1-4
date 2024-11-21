@@ -12,11 +12,13 @@ import com.example.timperio.crm.timperio_g1_4.entity.User;
 public interface UserService {
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
-    List<User> getAllUsers();
+    List<User> getAllUsers() throws Exception;
 
-    User addUser(UserDto userDto);
+    User createUser(UserDto userDto) throws Exception;
 
-    boolean updateUserPassword(String username, String newPassword);
+    boolean updateUserPassword(String username, String newPassword) throws Exception;
 
-    boolean updateUser(UserUpdateRequest userUpdateRequest);
+    boolean updateUser(UserUpdateRequest userUpdateRequest) throws Exception;
+
+    boolean deleteUser(String username) throws Exception;
 }

@@ -7,7 +7,7 @@ import com.example.timperio.crm.timperio_g1_4.entity.FilterRequest;
 
 public interface PurchaseHistoryService {
 
-    List<SaleDto> getAllPurchaseHistory();
+    List<SaleDto> getAllPurchaseHistory() throws Exception;
 
     List<SaleDto> filterPurchaseHistory(FilterRequest filterRequest) throws Exception;
 }
