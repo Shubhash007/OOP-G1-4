@@ -264,8 +264,8 @@ export default {
       }
 
       try {
-        const response = await fetch(`http://localhost:8080/users/admin/delete-user?username=${payload.username}`, {
-          method: "POST",
+        const response = await fetch(`http://localhost:8080/users/admin/delete-user?userId=${this.selectedUserDto.userId}`, {
+          method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

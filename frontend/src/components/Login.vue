@@ -42,7 +42,7 @@ export default {
         const token = localStorage.getItem("jwt_token");
         if (token) {
             // Optionally, add token validation logic here if needed
-            this.$router.push('/purchaseHistory'); // Redirect if a token exists
+            this.$router.push('/profile'); // Redirect if a token exists
         }
     },
     methods: {

@@ -110,7 +110,7 @@ public class NewsletterServiceImpl implements NewsletterService {
         template.setName(templateDto.getName());
         template.setDescription(templateDto.getDescription());
         template.setContent(templateDto.getContent());
-        //template.setCreatedAt(templateDto.getCreatedAt());
+        // template.setCreatedAt(templateDto.getCreatedAt());
 
         NewsletterTemplate savedTemplate = templateRepository.save(template);
         return convertTemplateToDto(savedTemplate);
@@ -179,8 +179,9 @@ public class NewsletterServiceImpl implements NewsletterService {
     @Override
     public void sendNewsletter(ProcessNewsletterDto processNewsletterDto) throws Exception {
         // Placeholder for sending logic.
-        // Customer customer = customerRepository.findById(customerNewsletterDto.getCustomerId().longValue())
-        //         .orElseThrow(() -> new NoSuchElementException("Customer not found"));
+        // Customer customer =
+        // customerRepository.findById(customerNewsletterDto.getCustomerId().longValue())
+        // .orElseThrow(() -> new NoSuchElementException("Customer not found"));
         final List<Long> customers = processNewsletterDto.getCustomers();
         final Long newsletterTemplateId = processNewsletterDto.getNewsletterTemplate();
         final List<Long> promotionIds = processNewsletterDto.getPromotions();
@@ -196,25 +197,38 @@ public class NewsletterServiceImpl implements NewsletterService {
             promotions.add(mapToPromotionDto(promotion));
         }
 
-        //  ------------------- Thymeleaf Template Engine -------------------
-        Context context = new Context();
-        context.setVariable("customerName", "Bob");
-        context.setVariable("promotions", promotions);
+        // // ------------------- Thymeleaf Template Engine -------------------
+        // Context context = new Context();
+        // context.setVariable("customerName", );
+        // context.setVariable("promotions", promotions);
 
-        String templateContent = newsletterTemplate.getContent();
-        templateContent = templateContent.replace("\\${", "${");
-        // TemplateSpec templateSpec = new TemplateSpec(templateContent, TemplateMode.HTML);
+        // String templateContent = newsletterTemplate.getContent();
+        // templateContent = templateContent.replace("\\${", "${");
+        // // TemplateSpec templateSpec = new TemplateSpec(templateContent,
+        // TemplateMode.HTML);
 
-        String htmlContent = templateEngine.process(templateContent, context);
+        // String htmlContent = templateEngine.process(templateContent, context);
 
         customerRepository.findAllById(customers).forEach(customer -> {
 
             if (customer.getEmail() != null) {
                 try {
+                    // ------------------- Thymeleaf Template Engine -------------------
+                    Context context = new Context();
+                    context.setVariable("customerName", "Bin Zhu");
+                    context.setVariable("promotions", promotions);
+
+                    String templateContent = newsletterTemplate.getContent();
+                    templateContent = templateContent.replace("\\${", "${");
+                    // TemplateSpec templateSpec = new TemplateSpec(templateContent,
+                    // TemplateMode.HTML);
+
+                    String htmlContent = templateEngine.process(templateContent, context);
+
                     MimeMessage mimeMessage = mailSender.createMimeMessage();
                     MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-                    helper.setFrom(dotenv.get("MAIL_USERNAME"), "Dennis");
+                    helper.setFrom(dotenv.get("MAIL_USERNAME"), "Timperio Newsletter");
                     helper.setTo(customer.getEmail());
 
                     helper.setSubject("Test");
@@ -228,7 +242,7 @@ public class NewsletterServiceImpl implements NewsletterService {
                 }
             }
         });
-        //  ------------------- Send Email -------------------
+        // ------------------- Send Email -------------------
     }
 
     // ------------------ Helper Converters ------------------
@@ -291,8 +305,7 @@ public class NewsletterServiceImpl implements NewsletterService {
             promotionDto.setRelatedProductIds(
                     promotion.getRelatedProducts().stream()
                             .map(product -> product.getProductId())
-                            .collect(Collectors.toList())
-            );
+                            .collect(Collectors.toList()));
         }
 
         return promotionDto;
