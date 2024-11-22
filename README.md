@@ -113,7 +113,11 @@ Ensure the following are installed:
    MAIL_USERNAME=your_email_address
    MAIL_PASSWORD=your_email_password
     ```
+3. Build and run the application:
 
+   ```
+   ./mvnw spring-boot:run
+   ```
 ---
     
 ### Frontend Setup
