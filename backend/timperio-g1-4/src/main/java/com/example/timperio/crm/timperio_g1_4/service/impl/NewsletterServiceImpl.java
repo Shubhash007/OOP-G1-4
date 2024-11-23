@@ -15,6 +15,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import com.example.timperio.crm.timperio_g1_4.dto.CustomerNewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterDto;
+import com.example.timperio.crm.timperio_g1_4.dto.NewsletterPromotionDto;
 import com.example.timperio.crm.timperio_g1_4.dto.NewsletterTemplateDto;
 import com.example.timperio.crm.timperio_g1_4.dto.ProcessNewsletterDto;
 import com.example.timperio.crm.timperio_g1_4.dto.PromotionDto;
@@ -22,7 +23,9 @@ import com.example.timperio.crm.timperio_g1_4.entity.Customer;
 import com.example.timperio.crm.timperio_g1_4.entity.CustomerNewsletter;
 import com.example.timperio.crm.timperio_g1_4.entity.Newsletter;
 import com.example.timperio.crm.timperio_g1_4.entity.NewsletterTemplate;
+import com.example.timperio.crm.timperio_g1_4.entity.Product;
 import com.example.timperio.crm.timperio_g1_4.entity.Promotion;
+import com.example.timperio.crm.timperio_g1_4.mapper.ProductMapper;
 import com.example.timperio.crm.timperio_g1_4.repository.CustomerNewsletterRepository;
 import com.example.timperio.crm.timperio_g1_4.repository.CustomerRepository;
 import com.example.timperio.crm.timperio_g1_4.repository.NewsletterRepository;
@@ -218,7 +221,7 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     // ------------------ Newsletter Sending ------------------
     @Override
-    public void sendNewsletter(ProcessNewsletterDto processNewsletterDto) throws Exception {
+    public void sendNewsletter(ProcessNewsletterDto processNewsletterDto) throws NoSuchElementException, Exception {
         // Placeholder for sending logic.
         // Customer customer =
         // customerRepository.findById(customerNewsletterDto.getCustomerId().longValue())
@@ -231,11 +234,11 @@ public class NewsletterServiceImpl implements NewsletterService {
                 .orElseThrow(() -> new NoSuchElementException("Newsletter template not found"));
         System.out.println("Sending newsletter to customer...");
 
-        ArrayList<PromotionDto> promotions = new ArrayList<>();
+        ArrayList<NewsletterPromotionDto> promotions = new ArrayList<>();
         for (Long promotionId : promotionIds) {
             Promotion promotion = promotionRepository.findById((long) promotionId)
                     .orElseThrow(() -> new NoSuchElementException("Promotion not found"));
-            promotions.add(mapToPromotionDto(promotion));
+            promotions.add(mapToNewsletterPromotionDto(promotion));
         }
 
         // // ------------------- Thymeleaf Template Engine -------------------
@@ -282,6 +285,9 @@ public class NewsletterServiceImpl implements NewsletterService {
                     throw new RuntimeException(e.getMessage());
                 }
             }
+            else{
+                throw new RuntimeException(customer.getCustomerId() + " email is empty");
+            }
         });
         // ------------------- Send Email -------------------
     }
@@ -324,8 +330,9 @@ public class NewsletterServiceImpl implements NewsletterService {
         return dto;
     }
 
-    private PromotionDto mapToPromotionDto(Promotion promotion) {
-        PromotionDto promotionDto = new PromotionDto();
+
+    private NewsletterPromotionDto mapToNewsletterPromotionDto(Promotion promotion) {
+        NewsletterPromotionDto promotionDto = new NewsletterPromotionDto();
         promotionDto.setPromotionId(promotion.getPromotionId());
         promotionDto.setPromotionName(promotion.getPromotionName());
         promotionDto.setPromotionDescription(promotion.getPromotionDescription());
@@ -338,14 +345,20 @@ public class NewsletterServiceImpl implements NewsletterService {
 
         // Set main product id
         if (promotion.getMainProduct() != null) {
-            promotionDto.setMainProductId(promotion.getMainProduct().getProductId());
+            Product mainProduct = productRepository.findById(promotion.getMainProduct().getProductId())
+                    .orElseThrow(() -> new NoSuchElementException("Main product not found"));
+            promotionDto.setMainProduct(ProductMapper.maptoProductDto(mainProduct));
         }
 
         // Set related product ids
         if (promotion.getRelatedProducts() != null) {
-            promotionDto.setRelatedProductIds(
+            // promotionDto.setRelatedProductIds(
+            //         promotion.getRelatedProducts().stream()
+            //                 .map(product -> product.getProductId())
+            //                 .collect(Collectors.toList()));
+            promotionDto.setRelatedProducts(
                     promotion.getRelatedProducts().stream()
-                            .map(product -> product.getProductId())
+                            .map(ProductMapper::maptoProductDto)
                             .collect(Collectors.toList()));
         }
 

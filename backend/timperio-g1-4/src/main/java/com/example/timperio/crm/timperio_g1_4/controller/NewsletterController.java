@@ -103,7 +103,7 @@ public class NewsletterController {
     public ResponseEntity<String> sendNewsletter(@RequestBody ProcessNewsletterDto processNewsletterDto) {
         try {
             newsletterService.sendNewsletter(processNewsletterDto);
-            return ResponseEntity.ok("Newsletter sent successfully");
+            return ResponseEntity.ok("Newsletter sent successfully to" + processNewsletterDto.getCustomers().toString() );
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error sending newsletter: " + e.getMessage());
         }

@@ -23,17 +23,38 @@
                 Buy Quantity: <span th:text="${promotion.buyQuantity}">Buy Quantity</span>
             </div>
 
-            Main Product Id: <span th:text="${promotion.mainProductId}"> Main Product Id</span><br>
+            Main Product: <span th:text="${promotion.mainProduct.productName}"> Main Product: </span><br>
+            <ul>
+                Main Product Description: <span th:text="${promotion.mainProduct.productDescription}"> Main Product Id</span><br>
+                Main Product Variant: <span th:text="${promotion.mainProduct.productVariant}"> Main Product Id</span><br>
+                Main Product Price: <span th:text="${promotion.mainProduct.productPrice}"> Main Product Id</span><br>
+            </ul>
+
+
             Frequent Shopper Required: 
-            <span th:text="${promotion.frequentShopperRequired ? 'Yes' : 'No'}">Yes/No</span><br/> -->
-            <!-- Related Products:
-            <div th:if="!promotion.getRelatedProductIds().isEmpty()">
+            <span th:text="${promotion.frequentShopperRequired ? 'Yes' : 'No'}">Yes/No</span><br/>
+            Related Products:
+            <div th:if="${!promotion.getRelatedProducts().isEmpty()}"></div>
                 <ul>
-                    <li th:each="productId : ${promotion.getRelatedProductIds()}">
-                        <span th:text="${productId}">Product ID</span>
+                    <li th:each="product : ${promotion.getRelatedProducts()}">
+                        <span th:text="${product.productName}">Product Name</span>
+                        <ul>
+                            <li>
+                                Product Description:
+                                <span th:text="${product.productDescription}">Product Description</span>
+                            </li>
+                            <li>
+                                Product Variant:
+                                <span th:text="${product.productVariant}">Product Variant</span>
+                            </li>
+                            <li>
+                                Product Price:
+                                <span th:text="${product.productPrice}">Product Price</span>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
-            </div> -->
+            </div>
             <hr/>
         </li>
     </ul>

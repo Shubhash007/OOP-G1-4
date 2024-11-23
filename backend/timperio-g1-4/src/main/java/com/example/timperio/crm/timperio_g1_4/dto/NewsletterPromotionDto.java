@@ -22,10 +22,10 @@ public class NewsletterPromotionDto {
     private String promotionDescription;
     private PromotionType promotionType;
     private LocalDate validUntil;
-    private Product mainProduct; // id of the main product
+    private ProductDto mainProduct; // id of the main product
     private BigDecimal discountRate;
     private Integer freeQuantity;
     private Integer buyQuantity;
-    private List<Product> relatedProducts; // ids of related products
+    private List<ProductDto> relatedProducts; // ids of related products
     private boolean frequentShopperRequired;
 }
