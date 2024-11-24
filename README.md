@@ -177,4 +177,5 @@ OOP-G1-4/
 
 ## **UML Diagram**
 
-Link to UML: https://lucid.app/lucidchart/fbe38dd5-0e01-43fc-ab7c-4e7624f34e14/edit?viewport_loc=-2048%2C-4791%2C5694%2C4402%2CHWEp-vi-RSFO&invitationId=inv_5b9ba8e5-678d-4c75-9ce6-29f999ac1735
+Link to UML: https://lucid.app/lucidchart/fbe38dd5-0e01-43fc-ab7c-4e7624f34e14/edit?viewport_loc=-273%2C-2817%2C3836%2C1981%2CBr-t26.G1X5K&invitationId=inv_5b9ba8e5-678d-4c75-9ce6-29f999ac1735
+Link to ER/Use Case Diagrams: https://lucid.app/lucidchart/63736662-3971-4b66-b5e4-650e8c99f75d/edit?viewport_loc=393%2C-71%2C5454%2C2817%2C0_0&invitationId=inv_3be95c1b-9fbb-4540-a587-efd0a3b2ba03
