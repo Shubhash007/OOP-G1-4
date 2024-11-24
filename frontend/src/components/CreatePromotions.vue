@@ -9,16 +9,20 @@
                 <v-form>
                     <!-- Promotion Name -->
                     <v-text-field
+                        class="mb-4"
                         v-model="promotion.promotionName"
                         label="Promotion Name"
                         outlined
+                        :rules="[v => !!v || 'Name is required']"
                     ></v-text-field>
 
                     <!-- Promotion Description -->
                     <v-text-field
+                        class="mb-4"
                         v-model="promotion.promotionDescription"
                         label="Promotion Description"
                         outlined
+                        :rules="[v => !!v || 'Description is required']"
                     ></v-text-field>
 
                     <!-- Frequent Shopper -->
@@ -30,45 +34,55 @@
 
                     <!-- Promotion Type -->
                     <v-select
+                        class="mb-4"
                         v-model="promotion.promotionType"
                         :items="promotionTypes"
                         label="Promotion Type"
                         outlined
+                        :rules="[v => !!v || 'Promo Type is required']"
                     ></v-select>
 
                     <!-- Valid Until Date -->
                     <v-text-field
+                        class="mb-4"
                         v-model="promotion.validUntil"
                         label="Valid Until"
                         type="date"
                         outlined
+                        :rules="[v => !!v || 'Expiry Date is required']"
                     ></v-text-field>
 
                     <!-- Discount Rate -->
                     <v-text-field
+                        class="mb-4"
                         v-if="promotion.promotionType=='% Discount'"
                         v-model="promotion.discountRate"
                         label="Discount Rate"
                         type="number"
                         outlined
+                        :rules="[v => !!v || 'Rate is required']"
                     ></v-text-field>
 
                     <!-- Buy Quantity -->
                     <v-text-field
+                        class="mb-4"
                         v-if="promotion.promotionType=='Get X Free'"
                         v-model="promotion.buyQuantity"
                         label="Buy Quantity"
                         type="number"
                         outlined
+                        :rules="[v => !!v || 'Buy Quantity is required']"
                     ></v-text-field>
 
                     <!-- Free Quantity -->
                     <v-text-field
+                        class="mb-4"
                         v-if="promotion.promotionType=='Get X Free'"
                         v-model="promotion.freeQuantity"
                         label="Free Quantity"
                         type="number"
                         outlined
+                        :rules="[v => !!v || 'Free Quantity is required']"
                     ></v-text-field>
 
                     <!-- Main Product Search Bar -->
@@ -79,6 +93,7 @@
                         outlined
                         @input="filterMainProduct"
                         prepend-inner-icon="mdi-magnify"
+                        :rules="[v => !!v || 'Main product is required']"
                     />
 
                     <!-- Display Selected Main Product -->
@@ -283,15 +298,37 @@ export default {
         },
         async createPromotion() {
             // Prepare the payload for the POST request
+
+            if (this.promotion.promotionName === "" || this.promotion.promotionDescription === "" ||
+                this.promotion.promotionType === "" || this.promotion.validUntil === "" ||
+                this.promotion.mainProduct === null
+            ){
+                console.log("ERROR CAUGHT")
+                this.showErrorAlert("Error. Please fill in all the relevant fields.");
+                return
+            }
+
             var promoType = ''
             if (this.promotion.promotionType==='% Discount'){
                 promoType = "DISCOUNT"
+                if (this.promotion.discountRate === null){
+                    this.showErrorAlert("Error. Please fill in all the relevant fields.");
+                    return
+                }
             }
             else if (this.promotion.promotionType==='Get X Free'){
                 promoType = "GETFREE"
+                if (this.promotion.freeQuantity === null || this.promotion.buyQuantity === null){
+                    this.showErrorAlert("Error. Please fill in all the relevant fields.");
+                    return
+                }
             }
             else if (this.promotion.promotionType==='Related Products'){
                 promoType = "RELATED"
+                if (this.promotion.relatedProducts.length === 0){
+                    this.showErrorAlert("Error. Please fill in all the relevant fields.");
+                    return
+                }
             }
 
             const payload = {
